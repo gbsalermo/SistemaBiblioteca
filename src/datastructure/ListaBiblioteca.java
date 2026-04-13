@@ -4,6 +4,8 @@ package datastructure;
 import model.Livro;
 import model.No;
 
+
+//Classe responsavel pelos metodos da lista encadeada
 public class ListaBiblioteca {
 
     //atributos cabeca, calda e cursor

@@ -1,5 +1,7 @@
 package model;
 
+
+//Classe responsavel pelos atributos e dados do objeto livro
 public class Livro {
 
     // gerador de id automatico baseado na anotação @GeneratedValue de JPA(SPRINGBOOT)
