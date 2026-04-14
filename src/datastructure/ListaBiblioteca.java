@@ -55,5 +55,49 @@ public class ListaBiblioteca {
         cursor = cursor.anterior;
         return cursor.livro;
     }
+    private boolean comparar(No a, No b){
+       return a.livro.getAnoPublicacao() > b.livro.getAnoPublicacao();
+    }
+    private No trocar(No node){
+        No next = node.proximo;
 
+        // verifica se e o primeiro elemento
+        if(node.anterior != null){
+            node.anterior.proximo = next;
+        }else{
+            cabeca = next;
+        }
+        // verifica se e o ultimo elemento
+        if(next.proximo != null){
+            next.proximo.anterior = node;
+        }else{
+            cauda = node;
+        }
+        // faz a troca
+        node.proximo = next.proximo;
+        next.anterior = node.anterior;
+
+        next.proximo = node;
+        node.anterior = next;
+
+        return next;
+    }
+    public void ordenar(){
+        if(cabeca == null) return;
+        boolean trocado;
+
+        do{
+            No atual = cabeca;
+            trocado = false;
+
+            while(atual != null && atual.proximo != null){
+                if(comparar(atual, atual.proximo)){
+                    atual = trocar(atual);
+                    trocado = true;
+                }else{
+                    atual = atual.proximo;
+                }
+            }
+        }while(trocado);
+    }
 }
