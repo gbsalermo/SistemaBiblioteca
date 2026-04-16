@@ -37,8 +37,9 @@ Para manter a compatibilidade com o padrão JSON e garantir que o VS Code gerenc
         "lib/**/*.jar"
     ]
 }
+```
 
 🔍 Entendendo as Configurações:
-java.project.sourcePaths: Informa ao compilador que todo o código-fonte (arquivos .java) deve ser buscado exclusivamente dentro da pasta src. Isso organiza onde o desenvolvimento acontece.
-java.project.outputPath: Define o destino dos arquivos binários compilados (arquivos .class). Ao centralizar esses arquivos na pasta bin, mantemos o projeto organizado e garantimos que o Git possa ignorá-los facilmente.
-java.project.referencedLibraries: Mapeia automaticamente todas as bibliotecas externas (arquivos .jar) que forem adicionadas à pasta lib. Isso é essencial para o gerenciamento de dependências no futuro.
+- java.project.sourcePaths: Informa ao compilador que todo o código-fonte (arquivos .java) deve ser buscado exclusivamente dentro da pasta src. Isso organiza onde o desenvolvimento acontece.
+- java.project.outputPath: Define o destino dos arquivos binários compilados (arquivos .class). Ao centralizar esses arquivos na pasta bin, mantemos o projeto organizado e garantimos que o Git possa ignorá-los facilmente.
+- java.project.referencedLibraries: Mapeia automaticamente todas as bibliotecas externas (arquivos .jar) que forem adicionadas à pasta lib. Isso é essencial para o gerenciamento de dependências no futuro.
