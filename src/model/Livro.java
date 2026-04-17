@@ -1,13 +1,17 @@
 package model;
 
+/**
+ * Classe Model que representa a entidade Livro.
+ * Responsável por armazenar os atributos e os dados associados ao objeto livro.
+*/
 
-//Classe responsavel pelos atributos e dados do objeto livro
-public class Livro {
+public class Livro{
 
-    // gerador de id automatico baseado na anotação @GeneratedValue de JPA(SPRINGBOOT)
+    // Contador estático compartilhado entre todos os objetos Livro.
+    // É utilizado para gerar identificadores (IDs) únicos automáticos para cada objeto Livro criado.
     private static int contadorId = 0;
 
-    // ATRIBUTOS
+    // Atributos:
 
     private int id;
     private String titulo;
@@ -15,90 +19,107 @@ public class Livro {
     private int anoPublicacao;
     private String genero;
     private String editora;
+    // Indica se o livro está emprestado (true) ou disponível (false).
+    private boolean emprestado;
 
-    // Construtor
+    // Construtor:
 
-    public Livro(String titulo, String autor, int anoPublicacao, String genero, String editora) {
+    public Livro(String titulo, String autor, int anoPublicacao, String genero, String editora){
         this.id = ++contadorId;
         this.titulo = titulo;
         this.autor = autor;
         this.anoPublicacao = anoPublicacao;
         this.genero = genero;
         this.editora = editora;
-
+        this.emprestado = false;
     }
 
-     // Getters e setters
-    public String getTitulo() {
+    // Métodos getters e setters para acesso e modificação dos atributos do objeto Livro:
+
+    public int getId(){
+        return id;
+    }
+
+    public String getTitulo(){
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
+    public void setTitulo(String titulo){
         this.titulo = titulo;
     }
 
-    public String getAutor() {
+    public String getAutor(){
         return autor;
     }
 
-    public void setAutor(String autor) {
+    public void setAutor(String autor){
         this.autor = autor;
     }
 
-    public int getAnoPublicacao() {
+    public int getAnoPublicacao(){
         return anoPublicacao;
     }
 
-    public void setAnoPublicacao(int anoPublicacao) {
+    public void setAnoPublicacao(int anoPublicacao){
         this.anoPublicacao = anoPublicacao;
     }
 
-    public String getGenero() {
+    public String getGenero(){
         return genero;
     }
 
-    public void setGenero(String genero) {
+    public void setGenero(String genero){
         this.genero = genero;
     }
 
-    public String getEditora() {
+    public String getEditora(){
         return editora;
     }
 
-    public void setEditora(String editora) {
+    public void setEditora(String editora){
         this.editora = editora;
     }
 
-     //hashCode e equals do id
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        return result;
+    public boolean isEmprestado(){
+        return emprestado;
     }
 
+    public void setEmprestado(boolean emprestado){
+        this.emprestado = emprestado;
+    }
+
+    // Método equals sobrescrito para comparar objetos Livro com base no identificador único (id):
+
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object obj){
+        // Os dois objetos são o mesmo na memória?
+        if (this == obj){
             return true;
-        if (obj == null)
+        }
+        // O objeto comparado é null?
+        if (obj == null){
             return false;
-        if (getClass() != obj.getClass())
+        }
+        // Os objetos são de classes diferentes?
+        if (getClass() != obj.getClass()){
             return false;
+        }
+        // O objeto é um livro!
+        // Faremos uma conversão de tipo chamada de casting.
+        // Isso é necessário porque na assinatura do método o parâmetro recebido é Object obj e Object não tem o atributo id.
+        // A próxima linha converte obj de Object para Livro e agora podemos acessar other.id
         Livro other = (Livro) obj;
-        if (id != other.id)
-            return false;
-        return true;
+        // Retorna true se os objetos representarem o mesmo Livro (mesmo id), caso contrário retorna false. 
+        return this.id == other.id;
     }
 
-    //ToString basico
+    // Método toString sobrescrito para exibir os dados do objeto Livro em formato legível:
+
     @Override
-    public String toString() {
-        return "Livro id=" + id +
-        "\ntitulo=" + titulo + 
-        "\nautor=" + autor + 
-        "\n anoPublicacao=" + anoPublicacao;
+    public String toString(){
+        return "Livro id = " + id +
+        "\nTítulo = " + titulo + 
+        "\nAutor = " + autor + 
+        "\nAno de Publicação = " + anoPublicacao;
     }
-
 }
