@@ -43,3 +43,8 @@ Para manter a compatibilidade com o padrão JSON e garantir que o VS Code gerenc
 - java.project.sourcePaths: Informa ao compilador que todo o código-fonte (arquivos .java) deve ser buscado exclusivamente dentro da pasta src. Isso organiza onde o desenvolvimento acontece.
 - java.project.outputPath: Define o destino dos arquivos binários compilados (arquivos .class). Ao centralizar esses arquivos na pasta bin, mantemos o projeto organizado e garantimos que o Git possa ignorá-los facilmente.
 - java.project.referencedLibraries: Mapeia automaticamente todas as bibliotecas externas (arquivos .jar) que forem adicionadas à pasta lib. Isso é essencial para o gerenciamento de dependências no futuro.
+
+***OBSERVAÇÕES DE COMPILAÇÃO***
+Inicialmente, o projeto apresentava problemas ao ser executado, pois a pasta bin (responsável pelos arquivos compilados .class) estava no .gitignore. Isso fazia com que, ao clonar o repositório, o compilador não tivesse os arquivos necessários para execução imediata, resultando em erros como ClassNotFoundException.
+Para resolver esse problema sem depender de ferramentas externas como Maven ou compilação manual pelo terminal, foi criado um script run.bat na raiz do projeto. Esse script automatiza todo o processo, compilando os arquivos .java e executando a aplicação em seguida.
+Dessa forma, qualquer usuário com o Java instalado pode rodar o projeto facilmente, sem necessidade de configuração adicional ou compilação manual.
