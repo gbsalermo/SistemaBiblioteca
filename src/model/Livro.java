@@ -117,9 +117,17 @@ public class Livro{
 
     @Override
     public String toString(){
+        String status;
+        if (emprestado){
+            status = "Emprestado";
+        }
+        else{
+            status = "Disponível";
+        }
         return "Livro id = " + id +
         "\nTítulo = " + titulo + 
         "\nAutor = " + autor + 
-        "\nAno de Publicação = " + anoPublicacao;
+        "\nAno de Publicação = " + anoPublicacao +
+        "\nStatus = " + status;
     }
 }
