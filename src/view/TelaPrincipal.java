@@ -1,4 +1,4 @@
-package ui;
+package view;
 
 //Testando como vai ser a tela principal ainda, com comandos basicos de swing
 //Até aqui é apenas uma janela vazia

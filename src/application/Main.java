@@ -2,7 +2,7 @@ package application;
 
 import javax.swing.JFrame;
 
-import ui.TelaPrincipal;
+import view.TelaPrincipal;
 
 public class Main {
     public static void main(String[] args){
