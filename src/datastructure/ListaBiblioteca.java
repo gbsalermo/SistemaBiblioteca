@@ -13,6 +13,7 @@ public class ListaBiblioteca {
     private No cabeca;
     private No cauda;
     private No cursor;
+    private int tamanho;
 
     //Metodos restantes
 
