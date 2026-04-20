@@ -1,50 +1,161 @@
-# Sistema de Gestão de Biblioteca 📚
+# 📚 Library Manager  
+### 🚀 Sistema de Gestão de Biblioteca em Java com Estrutura Dinâmica
 
-Este projeto consiste em um sistema de gerenciamento de livros desenvolvido em Java, focado na implementação de **Estruturas de Dados Dinâmicas** para a disciplina de Estrutura de Dados.
-
-## 🚀 Proposta do Projeto
-
-O objetivo principal é implementar uma estrutura onde cada nó representa um livro, permitindo a gestão eficiente do acervo.
-
-### Funcionalidades principais:
-- **Inserção Dinâmica:** Inserir livros no início, no fim ou em uma posição específica.
-- **Remoção:** Excluir livros do acervo.
-- **Busca:** Localizar livros por título ou autor.
-- **Exibição:** Listar todos os livros cadastrados.
-- **Ordenação:** Algoritmos para ordenar por Título, Autor e Ano de publicação.
-- **Interface Gráfica:** Desenvolvida com a biblioteca **Swing**.
-- **💡 Extra:** Implementação de **Lista Duplamente Encadeada** para navegação bidirecional (próximo/anterior).
+![Java](https://img.shields.io/badge/Java-17+-orange?style=for-the-badge&logo=java)
+![Swing](https://img.shields.io/badge/Swing-GUI-blue?style=for-the-badge)
+![Data Structure](https://img.shields.io/badge/Data%20Structure-Doubly%20Linked%20List-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow?style=for-the-badge)
 
 ---
 
-## 📂 Estrutura de Pastas
+## 🎬 Demonstração do Sistema
 
-- `src`: Contém todo o código-fonte (arquivos `.java`).
-- `lib`: Destinada a dependências e bibliotecas externas (arquivos `.jar`).
-- `bin`: Pasta onde o Java gera automaticamente os arquivos compilados (`.class`). *Nota: Esta pasta é ignorada pelo controle de versão (Git).*
+![Demonstração do sistema](docs/demo.gif)
 
 ---
 
-## ⚙️ Configurações do Ambiente (`settings.json`)
+## 🧠 Sobre o Projeto
 
-Para manter a compatibilidade com o padrão JSON e garantir que o VS Code gerencie corretamente o projeto, o arquivo .vscode/settings.json define a estrutura de compilação sem comentários internos:
+O **Library Manager** é um sistema completo de gerenciamento de livros desenvolvido em Java, com foco em:
+
+* **Estruturas de Dados Dinâmicas**
+* **Interface gráfica interativa (Swing)**
+* **Arquitetura em camadas (MVC-like)**
+
+O grande diferencial é a implementação de uma **Lista Duplamente Encadeada**, permitindo navegação bidirecional eficiente e manipulação dinâmica dos dados em memória.
+
+---
+
+## ✨ Funcionalidades
+
+### 📥 Inserção de Livros
+Adição dinâmica ao final da lista através do método:
+`adicionarNoFim();`
+
+### 🔍 Busca Inteligente
+* Busca por **Título**
+* Busca por **Autor**
+* Algoritmo linear otimizado
+
+### ❌ Remoção Dinâmica
+`removerAtual();`
+* Ajuste automático dos ponteiros `anterior` e `próximo`
+* Integridade da lista garantida
+
+### 🔄 Navegação Bidirecional
+* `avancar();`
+* `voltar();`
+
+### 📊 Ordenação
+* Por **Título**
+* Por **Autor**
+* Por **Ano**
+
+---
+
+## 🖥️ Interface do Sistema
+
+### 🎛️ Painel Superior
+* Ações de **Inserir, remover e buscar**
+* Navegação entre registros e **Ordenação**
+
+### 📋 Tabela de Livros
+* Visualização dinâmica (Painel Esquerdo)
+* Atualização em tempo real via `JTable`
+
+### 📝 Formulário de Cadastro (Painel Direito)
+Campos disponíveis:
+* Título, Autor e Ano
+* Gênero e Editora
+
+---
+
+## 💡 Diferencial Técnico
+
+### 🔥 Lista Duplamente Encadeada
+A estrutura permite que cada nó conheça seu predecessor e sucessor:
+`[Anterior] ← [NÓ] → [Próximo]`
+
+**🚀 Benefícios:**
+* Navegação sem necessidade de reiniciar o percurso da lista
+* Inserção e remoção eficientes em qualquer ponto
+* Melhor performance em operações sequenciais
+
+---
+
+## 🏗️ Arquitetura do Projeto
+
+A estrutura de pastas está organizada da seguinte forma:
+
+```text
+src/
+├── application/
+│   └── Main.java
+├── model/
+│   ├── Livro.java
+│   └── No.java
+├── repository/
+│   └── ListaLivrosDuplamenteEncadeada.java
+└── view/
+    ├── TelaPrincipal.java
+    ├── PainelSuperior.java
+    ├── PainelEsquerdo.java
+    └── PainelDireito.java
+
+bin/  (Arquivos compilados)
+lib/  (Dependências externas)
+```
+
+---
+
+## ⚙️ Configuração (VS Code)
+
+Configuração do arquivo `.vscode/settings.json` para reconhecimento correto do projeto e das bibliotecas:
 
 ```json
 {
-    "java.project.sourcePaths": ["src"], 
-    "java.project.outputPath": "bin", 
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar"
-    ]
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar"
+  ]
 }
 ```
 
-🔍 Entendendo as Configurações:
-- java.project.sourcePaths: Informa ao compilador que todo o código-fonte (arquivos .java) deve ser buscado exclusivamente dentro da pasta src. Isso organiza onde o desenvolvimento acontece.
-- java.project.outputPath: Define o destino dos arquivos binários compilados (arquivos .class). Ao centralizar esses arquivos na pasta bin, mantemos o projeto organizado e garantimos que o Git possa ignorá-los facilmente.
-- java.project.referencedLibraries: Mapeia automaticamente todas as bibliotecas externas (arquivos .jar) que forem adicionadas à pasta lib. Isso é essencial para o gerenciamento de dependências no futuro.
+---
 
-***OBSERVAÇÕES DE COMPILAÇÃO***
-Inicialmente, o projeto apresentava problemas ao ser executado, pois a pasta bin (responsável pelos arquivos compilados .class) estava no .gitignore. Isso fazia com que, ao clonar o repositório, o compilador não tivesse os arquivos necessários para execução imediata, resultando em erros como ClassNotFoundException.
-Para resolver esse problema sem depender de ferramentas externas como Maven ou compilação manual pelo terminal, foi criado um script run.bat na raiz do projeto. Esse script automatiza todo o processo, compilando os arquivos .java e executando a aplicação em seguida.
-Dessa forma, qualquer usuário com o Java instalado pode rodar o projeto facilmente, sem necessidade de configuração adicional ou compilação manual.
+## 🛠️ Como Executar
+
+Utilize o script de automação **`run.bat`** localizado na raiz do projeto. O script realiza automaticamente as seguintes tarefas:
+
+* **Limpeza e organização** do build anterior.
+* **Compilação** de todos os arquivos `.java` para a pasta `bin`.
+* **Execução** do sistema via classe `Main`.
+
+---
+
+## 🎯 Roadmap
+
+- [x] Interface gráfica completa
+- [x] Navegação bidirecional funcional
+- [x] Busca por título/autor
+- [ ] Remoção completa (lógica final)
+- [ ] Ordenação otimizada
+- [ ] Persistência em arquivo (JSON/DB)
+- [ ] Melhorias visuais (UI/UX)
+
+---
+
+## ⚠️ Status da Sprint
+
+### ✔ Concluído
+* **Interface gráfica completa (GUI)**
+* **Sistema de busca funcional (Título/Autor)**
+
+### ⚠️ Em andamento
+* Lógica final de Remoção
+* Algoritmos de Ordenação
+
+### 🚨 Ação Necessária
+Substituir os *mocks* (códigos temporários de teste) pelos métodos definitivos no arquivo:
+* `ListaLivrosDuplamenteEncadeada.java`
