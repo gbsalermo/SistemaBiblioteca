@@ -1,86 +1,139 @@
 package view;
 
-/* 
-* Classe responsavel pelo painel da direita onde ficam os detalhes do livro selecionado
-* Exibe e permite edição dos campos: ID, Título, Autor, Ano, Gênero e Editora
+import javax.swing.*;
+import java.awt.*;
+import repository.ListaLivrosDuplamenteEncadeada;
+import model.Livro;
+
+/**
+* Painel de Detalhes e Ações.
+* Este painel contém os campos para cadastro e os botões de controle da lista.
 */
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import java.awt.GridLayout;
 
 public class PainelDireito extends JPanel {
+    
+    // Campos de Texto
+    private JTextField txtTitulo, txtAutor, txtAno, txtGenero, txtEditora;
+    
+    // Botões
+    private JButton btnAnterior, btnProximo, btnSalvar, btnRemover;
 
-    // Campos de texto para cada atributo do livro
-    private JTextField txtId;
-    private JTextField txtTitulo;
-    private JTextField txtAutor;
-    private JTextField txtAno;
-    private JTextField txtGenero;
-    private JTextField txtEditora;
+    private TelaPrincipal tela;
+    private ListaLivrosDuplamenteEncadeada lista;
 
-    public PainelDireito() {
-        // GridLayout(6, 2, 10, 10) organiza em 6 linhas e 2 colunas com espaçamento de 10px
-        // Primeira coluna: labels (ID:, Título:, etc)
-        // Segunda coluna: campos de texto (JTextField)
-        this.setLayout(new GridLayout(6, 2, 10, 10));
+    public PainelDireito(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista) {
+        this.tela = tela;
+        this.lista = lista;
+        
+        // Layout de Grade: 12 linhas, 1 coluna (para labels, campos e botões)
+        this.setLayout(new GridLayout(13, 1, 5, 5));
+        this.setBorder(BorderFactory.createTitledBorder("Gerenciar Livro"));
 
-        // Linha 1: Label "ID:" + campo ID (não editável, gerado automaticamente)
-        this.add(new JLabel("ID:"));
-        txtId = new JTextField();
-        txtId.setEditable(false); // ID nunca pode ser alterado pelo usuário
-        this.add(txtId);
-
-        // Linha 2: Label "Título:" + campo para digitar o título do livro
-        this.add(new JLabel("Título:"));
+        // Inicializando Componentes
         txtTitulo = new JTextField();
-        this.add(txtTitulo);
-
-        // Linha 3: Label "Autor:" + campo para digitar o nome do autor
-        this.add(new JLabel("Autor:"));
         txtAutor = new JTextField();
-        this.add(txtAutor);
-
-        // Linha 4: Label "Ano:" + campo para digitar o ano de publicação
-        this.add(new JLabel("Ano:"));
         txtAno = new JTextField();
-        this.add(txtAno);
-
-        // Linha 5: Label "Gênero:" + campo para digitar o gênero do livro
-        this.add(new JLabel("Gênero:"));
         txtGenero = new JTextField();
-        this.add(txtGenero);
-
-        // Linha 6: Label "Editora:" + campo para digitar o nome da editora
-        this.add(new JLabel("Editora:"));
         txtEditora = new JTextField();
-        this.add(txtEditora);
+
+        // Adicionando ao Painel
+        add(new JLabel("Título:"));
+        add(txtTitulo);
+        add(new JLabel("Autor:"));
+        add(txtAutor);
+        add(new JLabel("Ano:"));
+        add(txtAno);
+        add(new JLabel("Gênero:"));
+        add(txtGenero);
+        add(new JLabel("Editora:"));
+        add(txtEditora);
+
+        // Painel de Navegação (O EXTRA)
+        JPanel painelNav = new JPanel(new GridLayout(1, 2, 5, 5));
+        btnAnterior = new JButton("<< Anterior");
+        btnProximo = new JButton("Próximo >>");
+        painelNav.add(btnAnterior);
+        painelNav.add(btnProximo);
+        add(painelNav);
+
+        // Botão de Ação
+        btnSalvar = new JButton("Salvar no Fim");
+        btnRemover = new JButton("Remover Atual");
+        add(btnSalvar);
+        add(btnRemover);
+
+        configurarEventos();
     }
 
-    // Getters — permitem que outras classes acessem os campos de texto
-    // Usado pela TelaPrincipal para ler/escrever dados do livro
-    
-    public JTextField getTxtId() { 
-        return txtId; 
+    private void configurarEventos() {
+        // Navegação: Próximo
+        btnProximo.addActionListener(e -> {
+            lista.avancar();
+            tela.atualizarInterface();
+        });
+
+        // Navegação: Anterior
+        btnAnterior.addActionListener(e -> {
+            lista.voltar();
+            tela.atualizarInterface();
+        });
+
+        // Ação: Salvar
+        btnSalvar.addActionListener(e -> {
+            try {
+                String titulo = txtTitulo.getText();
+                String autor = txtAutor.getText();
+                int ano = Integer.parseInt(txtAno.getText());
+                String genero = txtGenero.getText();
+                String editora = txtEditora.getText();
+
+                Livro novoLivro = new Livro(titulo, autor, ano, genero, editora);
+                lista.adicionarNoFim(novoLivro);
+                
+                limparCampos();
+                tela.atualizarInterface();
+                JOptionPane.showMessageDialog(this, "Livro salvo com sucesso!");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Erro: O campo Ano deve ser um número.");
+            }
+        });
+
+        // Ação: Remover
+        btnRemover.addActionListener(e -> {
+            if (!lista.estaVazia()) {
+                int confirm = JOptionPane.showConfirmDialog(this, "Excluir o livro atual?");
+                if (confirm == JOptionPane.YES_OPTION) {
+                    // Remove da memória.
+                    lista.removerAtual();
+                    // Sincroniza Tabela, Campos e Contador.
+                    tela.atualizarInterface();
+                }
+            }
+        });
     }
-    
-    public JTextField getTxtTitulo() { 
-        return txtTitulo; 
+
+    // Método para a TelaPrincipal preencher os campos ao navegar
+    public void exibirLivro(Livro livro) {
+        if (livro != null) {
+            txtTitulo.setText(livro.getTitulo());
+            txtAutor.setText(livro.getAutor());
+            txtAno.setText(String.valueOf(livro.getAnoPublicacao()));
+            txtGenero.setText(livro.getGenero());
+            txtEditora.setText(livro.getEditora());
+        } else {
+            limparCampos();
+        }
+        
+        // Desabilitar botões se não houver para onde navegar
+        btnAnterior.setEnabled(!lista.estaVazia() && lista.getIndiceAtual() > 0);
+        btnProximo.setEnabled(!lista.estaVazia() && (lista.getIndiceAtual() < lista.getTotalLivros() - 1));
     }
-    
-    public JTextField getTxtAutor() { 
-        return txtAutor; 
-    }
-    
-    public JTextField getTxtAno() { 
-        return txtAno; 
-    }
-    
-    public JTextField getTxtGenero() { 
-        return txtGenero; 
-    }
-    
-    public JTextField getTxtEditora() { 
-        return txtEditora; 
+
+    private void limparCampos() {
+        txtTitulo.setText("");
+        txtAutor.setText("");
+        txtAno.setText("");
+        txtGenero.setText("");
+        txtEditora.setText("");
     }
 }

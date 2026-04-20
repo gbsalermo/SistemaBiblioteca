@@ -1,85 +1,81 @@
 package view;
 
 import java.awt.FlowLayout;
+import javax.swing.*;
+import repository.ListaLivrosDuplamenteEncadeada;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-/* 
-* Classe responsavel pelo painel dos botoes e controles da parte superior
+/**
+* Classe responsavel pelo painel dos botoes e controles da parte superior.
 */
 
 public class PainelSuperior extends JPanel{
 
-    //Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo
-    private JButton btInserir;
-    private JButton btRemover;
-    private JButton btBuscar;
-    private JButton btAnterior;
-    private JButton btProximo;
-    private JComboBox<String> btOrdenar; //Botao para o usuario escolher como quer ordenar
+    //Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo:
 
-    public PainelSuperior() {
+    private JButton btInserir, btRemover, btBuscar, btAnterior, btProximo;
+    // Para mostrar a posição atual e botão para o usuário escolher como quer ordenar.
+    private JComboBox<String> cbOrdenar;
+    // Para mostrar a posição atual.
+    private JLabel lblContador;
+
+    private TelaPrincipal tela;
+    private ListaLivrosDuplamenteEncadeada lista;
+
+    // Construtor atualizado para receber as referências
+    public PainelSuperior(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista) {
+        this.tela = tela;
+        this.lista = lista;
         
-        //O flowLayout coloca os componentes em linha, da esquerda para a direita
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        //Botões de ação
-        
         btInserir = new JButton("INSERIR");
         btRemover = new JButton("REMOVER");
         btBuscar = new JButton("BUSCAR");
         btAnterior = new JButton("ANTERIOR");
         btProximo = new JButton("PROXIMO");
+        lblContador = new JLabel(" | Livros: 0/0");
 
-        String[] opcoes = {"ORDENAR POR TITULO", "ORDENAR POR AUTOR", "ORDERNAR POR ANO"}; //Crio uma lista de strings com as opções de ordenar
-        btOrdenar = new JComboBox<>(opcoes); //atribuo ao botao de ordenar
-
-        //Adicionando componentes ao painel
+        String[] opcoes = {"ORDENAR POR TITULO", "ORDENAR POR AUTOR", "ORDENAR POR ANO"};
+        cbOrdenar = new JComboBox<>(opcoes);
 
         this.add(btInserir);
         this.add(btRemover);
         this.add(btBuscar);
-        this.add(new JLabel(" | ")); //Separador
+        this.add(new JLabel(" | "));
         this.add(btAnterior);
         this.add(btProximo);
-        this.add(new JLabel(" | ")); //Separador
-        this.add(btOrdenar);
-    
+        this.add(lblContador);
+        this.add(new JLabel(" | "));
+        this.add(cbOrdenar);
+        
+        configurarEventos();
     }
 
+    private void configurarEventos() {
+        // Agora os botões do topo também controlam a lista!
+        btProximo.addActionListener(e -> {
+            lista.avancar();
+            tela.atualizarInterface();
+        });
+        
+        btAnterior.addActionListener(e -> {
+            lista.voltar();
+            tela.atualizarInterface();
+        });
 
-    //Getters para acessar os botoes
-    public JButton getBtInserir() {
-        return btInserir;
+        btRemover.addActionListener(e -> {
+            if (!lista.estaVazia()) {
+                lista.removerAtual();
+                tela.atualizarInterface();
+            }
+        });
     }
 
-    public JButton getBtRemover() {
-        return btRemover;
+    public void atualizarContador(int atual, int total) {
+        if (total == 0) {
+            lblContador.setText(" | Lista Vazia");
+        } else {
+            lblContador.setText(" | Livro: " + (atual + 1) + " / " + total);
+        }
     }
-
-    public JButton getBtBuscar() {
-        return btBuscar;
-    }
-
-    public JButton getBtAnterior() {
-        return btAnterior;
-    }
-
-    public JButton getBtProximo() {
-        return btProximo;
-    }
-
-    public JComboBox<String> getBtOrdenar() {
-        return btOrdenar;
-    }
-
-
-
-    
-    
-
-
 }

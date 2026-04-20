@@ -133,6 +133,7 @@ public class ListaLivrosDuplamenteEncadeada {
         }
         return atual.getLivro();
     }
+    // Comparações auxiliares:
 
     // Comparar por ano de publicação:
 
@@ -145,6 +146,15 @@ public class ListaLivrosDuplamenteEncadeada {
     private boolean compararPorAno(No a, No b) {
         // Usamos os getters para acessar os dados privados.
         return a.getLivro().getAnoPublicacao() > b.getLivro().getAnoPublicacao();
+    }
+
+    private boolean compararPorTitulo(No a, No b) {
+        // compareToIgnoreCase retorna > 0 se a String 'a' vier depois de 'b' na ordem alfabética
+        return a.getLivro().getTitulo().compareToIgnoreCase(b.getLivro().getTitulo()) > 0;
+    }
+
+    private boolean compararPorAutor(No a, No b) {
+        return a.getLivro().getAutor().compareToIgnoreCase(b.getLivro().getAutor()) > 0;
     }
 
     // Trocar com o próximo:
@@ -194,15 +204,67 @@ public class ListaLivrosDuplamenteEncadeada {
         return proximoNo;
     }
 
+    // Buscar por título:
+
+    /**
+    * Busca um livro pelo título na lista.
+    * Se encontrado, o marcador 'atual' é movido para este nó.
+    * @param titulo O título do livro a ser pesquisado.
+    * @return O objeto Livro encontrado ou null caso não exista.
+    */
+
+    public Livro buscarPorTitulo(String titulo) {
+        // Começamos a busca sempre pelo início da lista.
+        No aux = primeiro;
+        // Percorre a lista enquanto houver nós.
+        while (aux != null) {
+            // Compara o título do livro do nó atual com o título buscado.
+            if (aux.getLivro().getTitulo().equalsIgnoreCase(titulo)) {
+                this.atual = aux;
+                return aux.getLivro();
+            }
+            // Avança para o próximo nó para continuar a busca.
+            aux = aux.getProximo();
+        }
+        // Se o loop terminar sem retornar, o livro não foi encontrado.
+        return null;
+    }
+
+    // Buscar por autor:
+
+    /**
+    * Busca um livro pelo autor na lista.
+    * Se encontrado, o marcador 'atual' é movido para este nó.
+    * @param autor O nome do autor a ser pesquisado.
+    * @return O objeto Livro encontrado ou null caso não exista.
+    */
+
+    public Livro buscarPorAutor(String autor) {
+        // Começamos a busca sempre pelo início da lista.
+        No aux = primeiro;
+        // Percorre a lista enquanto houver nós.
+        while (aux != null) {
+            // Compara o autor do livro do nó atual com o autor buscado.
+            if (aux.getLivro().getAutor().equalsIgnoreCase(autor)) {
+                this.atual = aux;
+                return aux.getLivro();
+            }
+            // Avança para o próximo nó para continuar a busca.
+            aux = aux.getProximo();
+        }
+        // Se o loop terminar sem retornar, o livro não foi encontrado.
+        return null;
+    }
+
+    // Ordenar por ano de publicação:
+
     /**
     * Ordena a lista de livros por ano de publicação utilizando o algoritmo Bubble Sort.
     * O método percorre a lista repetidamente, comparando nós adjacentes e realizando a troca de posições quando o livro atual é mais recente que o próximo.
     * O processo se repete até que uma passagem completa ocorra sem nenhuma troca, garantindo que todos os elementos estejam em ordem crescente.
     */
 
-    // Ordenar:
-
-    public void ordenar() {
+    public void ordenarPorAno() {
         if (primeiro == null) {
             return;
         }
@@ -222,5 +284,185 @@ public class ListaLivrosDuplamenteEncadeada {
             }
         }
         while(trocado);
+    }
+
+    // Ordenar por título:
+
+    public void ordenarPorTitulo() {
+        if (primeiro == null) return;
+        boolean trocado;
+        do {
+            No atualOrdenacao = primeiro;
+            trocado = false;
+            while (atualOrdenacao != null && atualOrdenacao.getProximo() != null) {
+                if (compararPorTitulo(atualOrdenacao, atualOrdenacao.getProximo())) {
+                    atualOrdenacao = trocarComProximo(atualOrdenacao);
+                    trocado = true;
+                } else {
+                    atualOrdenacao = atualOrdenacao.getProximo();
+                }
+            }
+        } while (trocado);
+    }
+
+    // Ordenar por autor:
+
+    public void ordenarPorAutor() {
+        if (primeiro == null) return;
+        boolean trocado;
+        do {
+            No atualOrdenacao = primeiro;
+            trocado = false;
+            while (atualOrdenacao != null && atualOrdenacao.getProximo() != null) {
+                if (compararPorAutor(atualOrdenacao, atualOrdenacao.getProximo())) {
+                    atualOrdenacao = trocarComProximo(atualOrdenacao);
+                    trocado = true;
+                } else {
+                    atualOrdenacao = atualOrdenacao.getProximo();
+                }
+            }
+        } while (trocado);
+    }
+
+    // Inserir:
+
+    // Inserir no fim:
+
+    /**
+    * Adiciona um livro ao final da lista (usando o ponteiro 'ultimo').
+    */
+    public void adicionarNoFim(Livro livro) {
+        No novoNo = new No(livro);
+        if (primeiro == null) {
+            primeiro = ultimo = atual = novoNo;
+        }
+        else {
+            // Aqui o atributo 'ultimo' é essencial!
+            ultimo.setProximo(novoNo);
+            novoNo.setAnterior(ultimo);
+            ultimo = novoNo;
+        }
+        totalLivros++;
+    }
+
+    // Inserir no início:
+
+    /**
+    * Adiciona um livro ao início da lista.
+    */
+
+    public void adicionarNoInicio(Livro livro) {
+        No novoNo = new No(livro);
+        if (primeiro == null) {
+            primeiro = ultimo = atual = novoNo;
+        }
+        else {
+            novoNo.setProximo(primeiro);
+            primeiro.setAnterior(novoNo);
+            primeiro = novoNo;
+        }
+        totalLivros++;
+    }
+
+    // Inserir na posição:
+
+    /**
+    * Insere um livro em uma posição específica (base zero).
+    * Se a posição for 0, insere no início.
+    * Se a posição for igual ao total de livros, insere no fim.
+    */
+
+    public void adicionarNaPosicao(Livro livro, int posicao) {
+        // Validação de segurança: posição negativa ou além do limite
+        if (posicao < 0 || posicao > totalLivros) {
+            throw new IndexOutOfBoundsException("Posição inválida!");
+        }
+
+        if (posicao == 0) {
+            adicionarNoInicio(livro);
+        } else if (posicao == totalLivros) {
+            adicionarNoFim(livro);
+        } else {
+            // Inserção no meio da lista
+            No novoNo = new No(livro);
+            No aux = primeiro;
+
+            // Caminha até o nó que atualmente ocupa a posição desejada
+            for (int i = 0; i < posicao; i++) {
+                aux = aux.getProximo();
+            }
+
+            // O nó anterior ao que encontramos
+            No anteriorAoAux = aux.getAnterior();
+
+            // Fazendo as conexões:
+            // 1. O novo nó aponta para quem estava lá e para quem vinha antes
+            novoNo.setProximo(aux);
+            novoNo.setAnterior(anteriorAoAux);
+
+            // 2. O nó de trás agora aponta para o novo
+            anteriorAoAux.setProximo(novoNo);
+
+            // 3. O nó da frente agora aponta para o novo (voltando)
+            aux.setAnterior(novoNo);
+
+            totalLivros++;
+            // Opcional: move o marcador atual para a nova inserção
+            this.atual = novoNo;
+        }
+    }
+
+    // Remover atual:
+
+    /**
+    * Remove o livro que está atualmente selecionado pelo marcador 'atual'.
+    */
+
+    public void removerAtual() {
+        if (atual == null) return;
+
+        // Se for o único nó da lista
+        if (atual == primeiro && atual == ultimo) {
+            primeiro = ultimo = atual = null;
+        } 
+        // Se for o primeiro
+        else if (atual == primeiro) {
+            primeiro = primeiro.getProximo();
+            primeiro.setAnterior(null);
+            atual = primeiro;
+        } 
+        // Se for o último
+        else if (atual == ultimo) {
+            ultimo = ultimo.getAnterior();
+            ultimo.setProximo(null);
+            atual = ultimo;
+        } 
+        // Se estiver no meio
+        else {
+            No ant = atual.getAnterior();
+            No prox = atual.getProximo();
+            ant.setProximo(prox);
+            prox.setAnterior(ant);
+            // Move o marcador para o próximo após remover
+            atual = prox;
+        }
+        totalLivros--;
+    }
+
+    // Listar:
+
+    /**
+    * Retorna uma lista contendo todos os livros da estrutura.
+    * Útil para exibir em tabelas ou relatórios na interface Swing.
+    */
+
+    public java.util.List<Livro> listarTodos() {
+        java.util.List<Livro> listaTemporaria = new java.util.ArrayList<>();
+        No aux = primeiro;
+        while (aux != null) {
+            listaTemporaria.add(aux.getLivro());
+            aux = aux.getProximo();
+        }
+        return listaTemporaria;
     }
 }
