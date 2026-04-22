@@ -1,13 +1,13 @@
 package services;
 
 //imports necessarios
-import datastructure.ListaBiblioteca;
+import repository.ListaLivrosDuplamenteEncadeada;
 import model.No;
-import ui.TelaPrincipal;
+import view.TelaPrincipal;
 
 public class Remover {
     //declaracao de objetos necessarios
-    public String excluirPos(ListaBiblioteca lista, int posicao) {
+    public String excluirPos(ListaLivrosDuplamenteEncadeada lista, int posicao) {
     String msg = "";
     //chamando metodo para percorrer a lista
     No noTemp = getNo(lista, posicao);
@@ -16,38 +16,38 @@ public class Remover {
     if (noTemp == null) {
         msg = "Posicao não existe";
     } else if (posicao == 0) {
-        if (noTemp.proximo == null) {
-            lista.cabeca = null;
-            lista.cauda = null;
-            msg = "posicao excluida: " + posicao + ", valor: " + noTemp.livro.getTitulo();
+        if ((noTemp.getProximo()) == null) {
+            lista.setPrimeiro(null);
+            lista.setUltimo(null);
+            msg = "posicao excluida: " + posicao + ", valor: " + noTemp.getLivro().getTitulo();
         } else {
-            lista.cabeca = noTemp.proximo;
-            lista.cabeca.anterior = null;
-            msg = "posicao excluida: " + posicao + ", valor: " + noTemp.livro.getTitulo();
+            lista.setPrimeiro(noTemp.getProximo());
+            lista.getPrimeiro().setAnterior(null);
+            msg = "posicao excluida: " + posicao + ", valor: " + noTemp.getLivro().getTitulo();
         }
-    } else if (posicao == lista.tamanho - 1) {
-        lista.cauda = noTemp.anterior;
-        lista.cauda.proximo = null;
-        msg = "posicao excluida: " + posicao + ", valor: " + noTemp.livro.getTitulo();
+    } else if (posicao == lista.getTotalLivros() - 1) {
+        lista.setUltimo(noTemp.getAnterior());
+        lista.getUltimo().setProximo(null);
+        msg = "posicao excluida: " + posicao + ", valor: " + noTemp.getLivro().getTitulo();
     } else {
-        noTemp.anterior.proximo = noTemp.proximo;
-        noTemp.proximo.anterior = noTemp.anterior;
-        msg = "posicao excluida: " + posicao + ", valor: " + noTemp.livro.getTitulo();
+        noTemp.getAnterior().setProximo(noTemp.getProximo());
+        (noTemp.getProximo()).setAnterior(noTemp.getAnterior());
+        msg = "posicao excluida: " + posicao + ", valor: " + noTemp.getLivro().getTitulo();
     }
-    //reduzindo tamanho da lista
-    lista.tamanho--;
+    //reduzindo totalLivros da lista
+    lista.setTotalLivros(lista.getTotalLivros() - 1);
     return msg;
 }
 
 // percorrendo a lista
-private No getNo(ListaBiblioteca lista, int posicao) {
-    if (posicao < 0 || posicao >= lista.tamanho) {
+private No getNo(ListaLivrosDuplamenteEncadeada lista, int posicao) {
+    if (posicao < 0 || posicao >= lista.getTotalLivros()) {
         return null;
     }
     
-    No atual = lista.cabeca;
+    No atual = lista.getPrimeiro();
     for (int i = 0; i < posicao; i++) {
-        atual = atual.proximo;
+        atual = atual.getProximo();
     }
     return atual;
 }
