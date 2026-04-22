@@ -169,10 +169,7 @@ public class ListaLivrosDuplamenteEncadeada {
     private No trocarComProximo(No node) {
         // Armazena a referência do próximo nó para não perdê-la durante a troca.
         No proximoNo = node.getProximo();
-        // Caso base: se não houver um próximo, a troca é impossível.
-        if (proximoNo == null) {
-            return node;
-        }
+
         // 1. Ajuste dos vizinhos externos (quem está em volta do par).
         // Ajusta o vizinho da esquerda:
         // Se houver alguém antes do 'node', esse alguém agora apontará para o 'proximoNo'.
@@ -264,64 +261,23 @@ public class ListaLivrosDuplamenteEncadeada {
     * O processo se repete até que uma passagem completa ocorra sem nenhuma troca, garantindo que todos os elementos estejam em ordem crescente.
     */
 
-    public void ordenarPorAno() {
-        if (primeiro == null) {
-            return;
-        }
+    public void ordenar(){
+        if(cabeca == null) return;
         boolean trocado;
-        do {
-            No atualOrdenacao = primeiro;
+
+        do{
+            No atual = cabeca;
             trocado = false;
 
-            while (atualOrdenacao != null && atualOrdenacao.getProximo() != null) {
-                if (compararPorAno(atualOrdenacao, atualOrdenacao.getProximo())) {
-                    atualOrdenacao = trocarComProximo(atualOrdenacao);
+            while(atual != null && atual.getProximo() != null){
+                if(comparar(atual, atual.getProximo()) > 0){
+                    atual = trocarComProximo(atual);
                     trocado = true;
-                }
-                else {
-                    atualOrdenacao = atualOrdenacao.getProximo();
+                }else{
+                    atual = atual.getProximo();
                 }
             }
-        }
-        while(trocado);
-    }
-
-    // Ordenar por título:
-
-    public void ordenarPorTitulo() {
-        if (primeiro == null) return;
-        boolean trocado;
-        do {
-            No atualOrdenacao = primeiro;
-            trocado = false;
-            while (atualOrdenacao != null && atualOrdenacao.getProximo() != null) {
-                if (compararPorTitulo(atualOrdenacao, atualOrdenacao.getProximo())) {
-                    atualOrdenacao = trocarComProximo(atualOrdenacao);
-                    trocado = true;
-                } else {
-                    atualOrdenacao = atualOrdenacao.getProximo();
-                }
-            }
-        } while (trocado);
-    }
-
-    // Ordenar por autor:
-
-    public void ordenarPorAutor() {
-        if (primeiro == null) return;
-        boolean trocado;
-        do {
-            No atualOrdenacao = primeiro;
-            trocado = false;
-            while (atualOrdenacao != null && atualOrdenacao.getProximo() != null) {
-                if (compararPorAutor(atualOrdenacao, atualOrdenacao.getProximo())) {
-                    atualOrdenacao = trocarComProximo(atualOrdenacao);
-                    trocado = true;
-                } else {
-                    atualOrdenacao = atualOrdenacao.getProximo();
-                }
-            }
-        } while (trocado);
+        }while(trocado);
     }
 
     // Inserir:
