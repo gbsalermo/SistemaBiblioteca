@@ -135,26 +135,26 @@ public class ListaLivrosDuplamenteEncadeada {
     }
     // Comparações auxiliares:
 
-    // Comparar por ano de publicação:
-
-    /**
-    * Compara dois nós com base no ano de publicação dos livros.
-    * Útil para algoritmos de ordenação como o Bubble Sort.
-    * Retorna true se o ano do livro 'a' for maior que o do livro 'b'.
+    /*
+    * positivo = maior
+    * negativo = menor
+    * zero = iguais 
     */
-
-    private boolean compararPorAno(No a, No b) {
-        // Usamos os getters para acessar os dados privados.
-        return a.getLivro().getAnoPublicacao() > b.getLivro().getAnoPublicacao();
-    }
-
-    private boolean compararPorTitulo(No a, No b) {
-        // compareToIgnoreCase retorna > 0 se a String 'a' vier depois de 'b' na ordem alfabética
-        return a.getLivro().getTitulo().compareToIgnoreCase(b.getLivro().getTitulo()) > 0;
-    }
-
-    private boolean compararPorAutor(No a, No b) {
-        return a.getLivro().getAutor().compareToIgnoreCase(b.getLivro().getAutor()) > 0;
+    private int comparar(No a, No b){
+        // Compara primeiro o titulo, se sao iguais, faz o desempate no proximo
+       if(!a.getLivro().getTitulo().equalsIgnoreCase(b.getLivro().getTitulo())){
+        return a.getLivro().getTitulo().compareToIgnoreCase(b.getLivro().getTitulo());
+       }
+       // Compara o autor, se sao iguais, faz o desempate no proximo
+       if(!a.getLivro().getAutor().equalsIgnoreCase(b.getLivro().getAutor())){
+        return a.getLivro().getAutor().compareToIgnoreCase(b.getLivro().getAutor());
+       }
+       // finaliza o desempate comparando o ano
+       if(a.getLivro().getAnoPublicacao() != b.getLivro().getAnoPublicacao()){
+        return a.getLivro().getAnoPublicacao() - b.getLivro().getAnoPublicacao();
+       }
+       // os livros sao iguais
+       return 0;
     }
 
     // Trocar com o próximo:
