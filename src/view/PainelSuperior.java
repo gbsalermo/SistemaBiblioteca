@@ -12,7 +12,7 @@ public class PainelSuperior extends JPanel{
 
     //Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo:
 
-    private JButton btInserir, btRemover, btBuscar, btAnterior, btProximo;
+    private JButton btInserir, btRemover, btBuscar, btAnterior, btProximo, btOrdenar;
     // Para mostrar a posição atual e botão para o usuário escolher como quer ordenar.
     private JComboBox<String> cbOrdenar;
     // Para mostrar a posição atual.
@@ -34,9 +34,7 @@ public class PainelSuperior extends JPanel{
         btAnterior = new JButton("ANTERIOR");
         btProximo = new JButton("PROXIMO");
         lblContador = new JLabel(" | Livros: 0/0");
-
-        String[] opcoes = {"ORDENAR POR TITULO", "ORDENAR POR AUTOR", "ORDENAR POR ANO"};
-        cbOrdenar = new JComboBox<>(opcoes);
+        btOrdenar = new JButton("Ordenar");
 
         this.add(btInserir);
         this.add(btRemover);
@@ -46,7 +44,7 @@ public class PainelSuperior extends JPanel{
         this.add(btProximo);
         this.add(lblContador);
         this.add(new JLabel(" | "));
-        this.add(cbOrdenar);
+        this.add(btOrdenar);
         
         configurarEventos();
     }
@@ -66,6 +64,13 @@ public class PainelSuperior extends JPanel{
         btRemover.addActionListener(e -> {
             if (!lista.estaVazia()) {
                 lista.removerAtual();
+                tela.atualizarInterface();
+            }
+        });
+
+        btOrdenar.addActionListener(e -> {
+            if (!lista.estaVazia()) {
+                lista.ordenar();
                 tela.atualizarInterface();
             }
         });
