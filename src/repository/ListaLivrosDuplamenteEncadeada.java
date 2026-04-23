@@ -262,11 +262,11 @@ public class ListaLivrosDuplamenteEncadeada {
     */
 
     public void ordenar(){
-        if(cabeca == null) return;
+        if(primeiro == null) return;
         boolean trocado;
 
         do{
-            No atual = cabeca;
+            No atual = primeiro;
             trocado = false;
 
             while(atual != null && atual.getProximo() != null){
