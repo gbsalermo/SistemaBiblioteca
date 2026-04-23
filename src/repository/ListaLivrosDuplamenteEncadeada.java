@@ -262,11 +262,11 @@ public class ListaLivrosDuplamenteEncadeada {
     */
 
     public void ordenar(){
-        if(primeiro == null) return;
+        if(cabeca == null) return;
         boolean trocado;
 
         do{
-            No atual = primeiro;
+            No atual = cabeca;
             trocado = false;
 
             while(atual != null && atual.getProximo() != null){
@@ -411,7 +411,7 @@ public class ListaLivrosDuplamenteEncadeada {
     * Retorna uma lista contendo todos os livros da estrutura.
     * Útil para exibir em tabelas ou relatórios na interface Swing.
     */
-
+    /*
     public java.util.List<Livro> listarTodos() {
         java.util.List<Livro> listaTemporaria = new java.util.ArrayList<>();
         No aux = primeiro;
@@ -419,6 +419,49 @@ public class ListaLivrosDuplamenteEncadeada {
             listaTemporaria.add(aux.getLivro());
             aux = aux.getProximo();
         }
+        return listaTemporaria;
+    }
+    */
+   
+    public ListaLivrosDuplamenteEncadeada listarTodos() {
+        // Cria uma nova lista duplamente encadeada vazia
+        // Essa lista vai armazenar a cópia dos livros
+        ListaLivrosDuplamenteEncadeada listaTemporaria = new ListaLivrosDuplamenteEncadeada();
+
+        // Cria um nó auxiliar que começa apontando para o primeiro nó da lista original
+        No aux = primeiro;
+
+        // Percorre a lista enquanto o nó atual não for nulo
+        while (aux != null) {
+
+            // Cria um novo nó copiando o livro do nó atual
+            // (não copia o nó inteiro, só o objeto Livro)
+            No novo = new No(aux.getLivro());
+
+            // Verifica se a lista temporária ainda está vazia
+            if (listaTemporaria.primeiro == null) {
+
+                // Se estiver vazia, o novo nó será o primeiro e o último ao mesmo tempo
+                listaTemporaria.primeiro = novo;
+                listaTemporaria.ultimo = novo;
+
+            } else {
+
+                // Liga o último nó atual da lista temporária ao novo nó
+                listaTemporaria.ultimo.setProximo(novo);
+
+                // Faz o novo nó apontar para o nó anterior (duplamente encadeada)
+                novo.setAnterior(listaTemporaria.ultimo);
+
+                // Atualiza o ponteiro "último" para o novo nó inserido
+                listaTemporaria.ultimo = novo;
+            }
+
+            // Avança para o próximo nó da lista original
+            aux = aux.getProximo();
+        }
+
+        // Retorna a nova lista contendo todos os livros copiados
         return listaTemporaria;
     }
 }
