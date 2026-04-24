@@ -5,8 +5,12 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import javax.swing.table.DefaultTableModel;
+
+import java.util.ArrayList;
 import java.util.List;
 import model.Livro;
+import model.No;
+import repository.ListaLivrosDuplamenteEncadeada;
 import repository.ListaLivrosDuplamenteEncadeada;
 
 /* 
@@ -53,22 +57,38 @@ public class PainelEsquerdo extends JPanel {
     * Limpa a tabela e insere todos os livros vindos da lista encadeada.
     */
 
-    public void atualizarTabela() {
-        // Limpa todas as linhas atuais
-        modeloTabela.setRowCount(0);
-        // Pega a lista convertida que fizemos no repositório
-        List<Livro> todosOsLivros = lista.listarTodos();
-        // Adiciona cada livro como uma nova linha no modelo
-        for (Livro l : todosOsLivros) {
-            Object[] linha = {
-                l.getId(),
-                l.getTitulo(),
-                l.getAutor(),
-                l.getAnoPublicacao()
-            };
-            modeloTabela.addRow(linha);
-        }
+ public void atualizarTabela() {
+    //Zera a tabela removendo linhas existentes
+    modeloTabela.setRowCount(0);
+
+    //Pega a lista encadeada do repositorio
+    ListaLivrosDuplamenteEncadeada listaEncadeada = lista.listarTodos();
+    
+    //Crio um array para armazenar esta lista
+    List<Livro> listaConvertida = new ArrayList<>();
+
+    //Criação de ponteiro auxiliar que inicia no primeiro no da lista
+    No aux = listaEncadeada.getPrimeiro();
+
+    //Segue a lista até o final(null), pega o livro do nó atual e adiciona no array, depois avança para o prox. nó e verifica a condição
+    while (aux != null) {
+        listaConvertida.add(aux.getLivro());
+        aux = aux.getProximo();
     }
+
+    //Aqui percorre o arrayList convertido e cria uma linha da tabela
+    for (Livro l : listaConvertida) {
+        Object[] linha = {
+            l.getId(),
+            l.getTitulo(),
+            l.getAutor(),
+            l.getAnoPublicacao()
+        };
+
+        //Adiciona essa linha na tabela no swing
+        modeloTabela.addRow(linha);
+    }
+}
     public JTable getTabelaLivros() {
         return tabelaLivros;
     }

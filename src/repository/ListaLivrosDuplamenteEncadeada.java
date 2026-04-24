@@ -45,6 +45,10 @@ public class ListaLivrosDuplamenteEncadeada {
         return totalLivros;
     }
 
+    public No getPrimeiro() {
+    return primeiro;
+}
+
     /**
     * Retorna o índice (posição base zero) do nó 'atual' na lista.
     * Retorna o índice do livro atual ou -1 se a lista estiver vazia ou nada selecionado.
@@ -262,11 +266,11 @@ public class ListaLivrosDuplamenteEncadeada {
     */
 
     public void ordenar(){
-        if(cabeca == null) return;
+        if(primeiro == null) return;
         boolean trocado;
 
         do{
-            No atual = cabeca;
+            No atual = primeiro;
             trocado = false;
 
             while(atual != null && atual.getProximo() != null){

@@ -11,15 +11,34 @@ public class TelaPrincipal {
 
     // Atributos:
 
+    private ListaLivrosDuplamenteEncadeada lista; //teste
     private JFrame janela;
     private PainelSuperior painelSuperior;
     private PainelEsquerdo painelEsquerdo;
     private PainelDireito painelDireito;
             
     // 1. A instância única da sua lista.
-    private ListaLivrosDuplamenteEncadeada lista = new ListaLivrosDuplamenteEncadeada();
+    //private ListaLivrosDuplamenteEncadeada lista = new ListaLivrosDuplamenteEncadeada();
+    //teste
+   
+
+     // Construtor principal da classe, recebendo a lista pronta e realizando a injeção de dependência
+    public TelaPrincipal(ListaLivrosDuplamenteEncadeada lista) {
+    this.lista = lista;
+    // Chama o método responsável por montar a interface gráfica.    
+    inicializar();
+    }
 
     public TelaPrincipal() {
+        // Cria uma nova lista vazia e chama o construtor principal.
+        // Isso garante que a inicialização sempre siga o mesmo fluxo.
+        this(new ListaLivrosDuplamenteEncadeada());
+    }
+
+    //Mu
+
+    public void inicializar() {
+        
         // Criação da janela e o titulo.
         janela = new JFrame("Sistema de Biblioteca");
         // Tamanho da tela, largxalt em pixels.
