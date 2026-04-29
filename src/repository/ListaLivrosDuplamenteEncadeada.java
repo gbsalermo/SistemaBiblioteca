@@ -348,7 +348,7 @@ public class ListaLivrosDuplamenteEncadeada {
             No aux = primeiro;
 
             // Caminha até o nó que atualmente ocupa a posição desejada
-            for (int i = 0; i < posicao; i++) {
+            for (int i = 1; i < posicao; i++) {
                 aux = aux.getProximo();
             }
 
