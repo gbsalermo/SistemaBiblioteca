@@ -76,9 +76,20 @@ public class PainelSuperior extends JPanel{
         
         btBuscar.addActionListener(e -> {
             if(!lista.estaVazia()){
-                String titulo = JOptionPane.showInputDialog(null, "Digite o título a buscar:");
-                if (titulo != null && !titulo.trim().isEmpty()){
-                    Livro encontrado = lista.buscarPorTitulo(titulo.trim());
+                String[] opcoes = {"Título", "Autor"};
+                int tipo = JOptionPane.showOptionDialog(
+                    null, "Buscar por:", "Tipo de Busca",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, opcoes, opcoes[0]
+                );
+
+                if (tipo == -1) return; //usuário fechou o dialog
+
+                String termo = JOptionPane.showInputDialog(null, "Digite o " + opcoes[tipo]);
+                if (termo != null && !termo.trim().isEmpty()){
+                    Livro encontrado = (tipo == 0)
+                        ? lista.buscarPorTitulo(termo.trim())
+                        : lista.buscarPorAutor(termo.trim());
                     
                     if (encontrado != null){
                         tela.atualizarInterfaceBusca(encontrado);
