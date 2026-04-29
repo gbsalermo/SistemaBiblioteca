@@ -13,7 +13,7 @@ import model.Livro;
 public class PainelDireito extends JPanel {
     
     // Campos de Texto
-    private JTextField txtTitulo, txtAutor, txtAno, txtGenero, txtEditora;
+    private JTextField txtTitulo, txtAutor, txtAno, txtGenero, txtEditora, txtPosicao;
     
     // Botões
     private JButton btnSalvarInicio, btnSalvarFim, btnSalvarPosicao;
@@ -26,7 +26,7 @@ public class PainelDireito extends JPanel {
         this.lista = lista;
         
         // Layout de Grade: 12 linhas, 1 coluna (para labels, campos e botões)
-        this.setLayout(new GridLayout(13, 1, 5, 5));
+        this.setLayout(new GridLayout(15, 1, 5, 5));
         this.setBorder(BorderFactory.createTitledBorder("Gerenciar Livro"));
 
         // Inicializando Componentes
@@ -35,6 +35,8 @@ public class PainelDireito extends JPanel {
         txtAno = new JTextField();
         txtGenero = new JTextField();
         txtEditora = new JTextField();
+        txtPosicao = new JTextField("(opcional)");
+        txtPosicao.setForeground(Color.GRAY);
 
         // Adicionando ao Painel
         add(new JLabel("Título:"));
@@ -47,6 +49,8 @@ public class PainelDireito extends JPanel {
         add(txtGenero);
         add(new JLabel("Editora:"));
         add(txtEditora);
+        add(new JLabel("Posição:"));
+        add(txtPosicao);
 
         // Botão de Ação
         btnSalvarInicio = new JButton("Inserir no Início");
@@ -105,18 +109,53 @@ public class PainelDireito extends JPanel {
             try {
                 String titulo = txtTitulo.getText();
                 String autor = txtAutor.getText();
-                int ano = Integer.parseInt(txtAno.getText());
                 String genero = txtGenero.getText();
                 String editora = txtEditora.getText();
+                
+                int ano;
+                try {
+                    ano = Integer.parseInt(txtAno.getText());
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro: O campo Ano deve ser um número.");
+                    return;
+                }
+                String textoPosicao = txtPosicao.getText().trim();
+                if (textoPosicao.isEmpty() || textoPosicao.equals("(opcional)")){
+                    JOptionPane.showMessageDialog(this, "Erro: Informe a posição.");
+                    return;
+                }
+                int posicao;
+                try {
+                    posicao = Integer.parseInt(textoPosicao);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro: O campo Posição deve ser um número.");
+                    return;
+                }
 
                 Livro novoLivro = new Livro(titulo, autor, ano, genero, editora);
-                lista.adicionarNaPosicao(novoLivro, 5);
+                lista.adicionarNaPosicao(novoLivro, posicao);
                 
                 limparCampos();
                 tela.atualizarInterface();
                 JOptionPane.showMessageDialog(this, "Livro salvo com sucesso!");
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Erro: O campo Ano deve ser um número.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro inesperado: " + ex.getMessage());
+            }
+        });
+
+        // Placeholder do campo posição
+        txtPosicao.addFocusListener(new java.awt.event.FocusAdapter(){
+            public void focusGained(java.awt.event.FocusEvent e){
+                if (txtPosicao.getText().equals("(opcional)")){
+                    txtPosicao.setText("");
+                    txtPosicao.setForeground(Color.BLACK);
+                }
+            }
+            public void focusLost(java.awt.event.FocusEvent e){
+                if (txtPosicao.getText().isEmpty()){
+                    txtPosicao.setText("(opcional)");
+                    txtPosicao.setForeground(Color.GRAY);
+                }
             }
         });
     }
