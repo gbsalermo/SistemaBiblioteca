@@ -16,7 +16,7 @@ public class PainelDireito extends JPanel {
     private JTextField txtTitulo, txtAutor, txtAno, txtGenero, txtEditora;
     
     // Botões
-    private JButton btnAnterior, btnProximo, btnSalvar, btnRemover;
+    private JButton btnSalvarInicio, btnSalvarFim, btnSalvarPosicao;
 
     private TelaPrincipal tela;
     private ListaLivrosDuplamenteEncadeada lista;
@@ -48,38 +48,40 @@ public class PainelDireito extends JPanel {
         add(new JLabel("Editora:"));
         add(txtEditora);
 
-        // Painel de Navegação (O EXTRA)
-        JPanel painelNav = new JPanel(new GridLayout(1, 2, 5, 5));
-        btnAnterior = new JButton("<< Anterior");
-        btnProximo = new JButton("Próximo >>");
-        painelNav.add(btnAnterior);
-        painelNav.add(btnProximo);
-        add(painelNav);
-
         // Botão de Ação
-        btnSalvar = new JButton("Salvar no Fim");
-        btnRemover = new JButton("Remover Atual");
-        add(btnSalvar);
-        add(btnRemover);
+        btnSalvarInicio = new JButton("Inserir no Início");
+        btnSalvarFim = new JButton("Inserir no Fim");
+        btnSalvarPosicao = new JButton("Inserir na Posição");
+        add(btnSalvarInicio);
+        add(btnSalvarFim);
+        add(btnSalvarPosicao);
 
         configurarEventos();
     }
 
     private void configurarEventos() {
-        // Navegação: Próximo
-        btnProximo.addActionListener(e -> {
-            lista.avancar();
-            tela.atualizarInterface();
+        // Ação: Salvar no Início
+        btnSalvarInicio.addActionListener(e -> {
+            try {
+                String titulo = txtTitulo.getText();
+                String autor = txtAutor.getText();
+                int ano = Integer.parseInt(txtAno.getText());
+                String genero = txtGenero.getText();
+                String editora = txtEditora.getText();
+
+                Livro novoLivro = new Livro(titulo, autor, ano, genero, editora);
+                lista.adicionarNoInicio(novoLivro);
+                
+                limparCampos();
+                tela.atualizarInterface();
+                JOptionPane.showMessageDialog(this, "Livro salvo com sucesso!");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Erro: O campo Ano deve ser um número.");
+            }
         });
 
-        // Navegação: Anterior
-        btnAnterior.addActionListener(e -> {
-            lista.voltar();
-            tela.atualizarInterface();
-        });
-
-        // Ação: Salvar
-        btnSalvar.addActionListener(e -> {
+        // Ação: Salvar no Fim
+        btnSalvarFim.addActionListener(e -> {
             try {
                 String titulo = txtTitulo.getText();
                 String autor = txtAutor.getText();
@@ -98,16 +100,23 @@ public class PainelDireito extends JPanel {
             }
         });
 
-        // Ação: Remover
-        btnRemover.addActionListener(e -> {
-            if (!lista.estaVazia()) {
-                int confirm = JOptionPane.showConfirmDialog(this, "Excluir o livro atual?");
-                if (confirm == JOptionPane.YES_OPTION) {
-                    // Remove da memória.
-                    lista.removerAtual();
-                    // Sincroniza Tabela, Campos e Contador.
-                    tela.atualizarInterface();
-                }
+        // Ação: Salvar na Posição
+        btnSalvarPosicao.addActionListener(e -> {
+            try {
+                String titulo = txtTitulo.getText();
+                String autor = txtAutor.getText();
+                int ano = Integer.parseInt(txtAno.getText());
+                String genero = txtGenero.getText();
+                String editora = txtEditora.getText();
+
+                Livro novoLivro = new Livro(titulo, autor, ano, genero, editora);
+                lista.adicionarNaPosicao(novoLivro, 5);
+                
+                limparCampos();
+                tela.atualizarInterface();
+                JOptionPane.showMessageDialog(this, "Livro salvo com sucesso!");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Erro: O campo Ano deve ser um número.");
             }
         });
     }
@@ -124,9 +133,6 @@ public class PainelDireito extends JPanel {
             limparCampos();
         }
         
-        // Desabilitar botões se não houver para onde navegar
-        btnAnterior.setEnabled(!lista.estaVazia() && lista.getIndiceAtual() > 0);
-        btnProximo.setEnabled(!lista.estaVazia() && (lista.getIndiceAtual() < lista.getTotalLivros() - 1));
     }
 
     private void limparCampos() {
