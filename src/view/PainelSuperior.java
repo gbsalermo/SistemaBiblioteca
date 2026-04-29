@@ -12,7 +12,7 @@ public class PainelSuperior extends JPanel{
 
     //Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo:
 
-    private JButton btInserir, btRemover, btBuscar, btAnterior, btProximo, btOrdenar;
+    private JButton btRemover, btBuscar, btAnterior, btProximo, btOrdenar;
     // Para mostrar a posição atual e botão para o usuário escolher como quer ordenar.
     private JComboBox<String> cbOrdenar;
     // Para mostrar a posição atual.
@@ -28,17 +28,15 @@ public class PainelSuperior extends JPanel{
         
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        btInserir = new JButton("INSERIR");
         btRemover = new JButton("REMOVER");
         btBuscar = new JButton("BUSCAR");
         btAnterior = new JButton("ANTERIOR");
         btProximo = new JButton("PROXIMO");
         lblContador = new JLabel(" | Livros: 0/0");
-        btOrdenar = new JButton("Ordenar");
+        btOrdenar = new JButton("ORDENAR");
 
-        this.add(btInserir);
-        this.add(btRemover);
         this.add(btBuscar);
+        this.add(btRemover);
         this.add(new JLabel(" | "));
         this.add(btAnterior);
         this.add(btProximo);
