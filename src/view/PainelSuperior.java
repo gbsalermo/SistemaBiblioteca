@@ -3,6 +3,7 @@ package view;
 import java.awt.FlowLayout;
 import javax.swing.*;
 import repository.ListaLivrosDuplamenteEncadeada;
+import model.Livro;
 
 /**
 * Classe responsavel pelo painel dos botoes e controles da parte superior.
@@ -10,11 +11,9 @@ import repository.ListaLivrosDuplamenteEncadeada;
 
 public class PainelSuperior extends JPanel{
 
-    //Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo:
+    //Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo, Listar:
 
-    private JButton btRemover, btBuscar, btAnterior, btProximo, btOrdenar;
-    // Para mostrar a posição atual e botão para o usuário escolher como quer ordenar.
-    private JComboBox<String> cbOrdenar;
+    private JButton btRemover, btBuscar, btAnterior, btProximo, btOrdenar, btListar;
     // Para mostrar a posição atual.
     private JLabel lblContador;
 
@@ -34,6 +33,7 @@ public class PainelSuperior extends JPanel{
         btProximo = new JButton("PROXIMO");
         lblContador = new JLabel(" | Livros: 0/0");
         btOrdenar = new JButton("ORDENAR");
+        btListar = new JButton("LISTAR");
 
         this.add(btBuscar);
         this.add(btRemover);
@@ -43,6 +43,7 @@ public class PainelSuperior extends JPanel{
         this.add(lblContador);
         this.add(new JLabel(" | "));
         this.add(btOrdenar);
+        this.add(btListar);
         
         configurarEventos();
     }
@@ -71,6 +72,21 @@ public class PainelSuperior extends JPanel{
                 lista.ordenar();
                 tela.atualizarInterface();
             }
+        });
+        
+        btBuscar.addActionListener(e -> {
+            if(!lista.estaVazia()){
+                String titulo = JOptionPane.showInputDialog(null, "Digite o título a buscar:");
+                if (titulo != null && !titulo.trim().isEmpty()){
+                    Livro encontrado = lista.buscarPorTitulo(titulo.trim());
+                    
+                    if (encontrado != null){
+                        tela.atualizarInterfaceBusca(encontrado);
+                    }else {
+                        JOptionPane.showMessageDialog(null, "Livro não encontrado.");
+                    }
+            }
+        }
         });
     }
 
