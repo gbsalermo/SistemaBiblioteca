@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import repository.ListaLivrosDuplamenteEncadeada;
+import model.Livro;
 
 public class TelaPrincipal {
 
@@ -80,5 +81,11 @@ public class TelaPrincipal {
     
         // 3. Atualiza o contador lá em cima
         painelSuperior.atualizarContador(lista.getIndiceAtual(), lista.getTotalLivros());
+    }
+    
+    public void atualizarInterfaceBusca(Livro livro) {
+    painelEsquerdo.filtrarTabela(livro);
+    painelDireito.exibirLivro(livro);
+    painelSuperior.atualizarContador(lista.getIndiceAtual(), lista.getTotalLivros());
     }
 }
