@@ -99,6 +99,13 @@ public class PainelSuperior extends JPanel{
             }
         }
         });
+
+        btListar.addActionListener(e -> {
+            if (!lista.estaVazia()) {
+                lista.listarTodos();
+                tela.atualizarInterface();
+            }
+        });
     }
 
     public void atualizarContador(int atual, int total) {
