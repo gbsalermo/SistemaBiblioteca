@@ -19,9 +19,11 @@ public class PainelSuperior extends JPanel{
 
     private TelaPrincipal tela;
     private ListaLivrosDuplamenteEncadeada lista;
+    private PainelEsquerdo painelEsquerdo;
 
     // Construtor atualizado para receber as referências
-    public PainelSuperior(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista) {
+    public PainelSuperior(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista, PainelEsquerdo painelEsquerdo) {
+        this.painelEsquerdo = painelEsquerdo;
         this.tela = tela;
         this.lista = lista;
         
@@ -87,17 +89,13 @@ public class PainelSuperior extends JPanel{
 
                 String termo = JOptionPane.showInputDialog(null, "Digite o " + opcoes[tipo]);
                 if (termo != null && !termo.trim().isEmpty()){
-                    Livro encontrado = (tipo == 0)
-                        ? lista.buscarPorTitulo(termo.trim())
-                        : lista.buscarPorAutor(termo.trim());
+                    tela.getPainelEsquerdo().filtrarTabela(termo.trim(), tipo);
                     
-                    if (encontrado != null){
-                        tela.atualizarInterfaceBusca(encontrado);
-                    }else {
+                    if (tela.getPainelEsquerdo().getTabelaLivros().getRowCount() == 0){
                         JOptionPane.showMessageDialog(null, "Livro não encontrado.");
                     }
+                }
             }
-        }
         });
 
         btListar.addActionListener(e -> {

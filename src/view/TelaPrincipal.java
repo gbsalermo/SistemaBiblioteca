@@ -52,9 +52,9 @@ public class TelaPrincipal {
 
         // 2. Passar a 'lista' e a própria 'TelaPrincipal' para os painéis.
         // Isso permite que os botões dentro dos painéis chamem métodos daqui.
-        painelSuperior = new PainelSuperior(this, lista); 
-        painelDireito = new PainelDireito(this, lista);
         painelEsquerdo = new PainelEsquerdo(this, lista);
+        painelSuperior = new PainelSuperior(this, lista, painelEsquerdo); 
+        painelDireito = new PainelDireito(this, lista);
         // Adiciona cada painel em uma posição.
         painelPrincipal.add(painelSuperior, BorderLayout.NORTH);
         painelPrincipal.add(painelDireito, BorderLayout.WEST);
@@ -83,9 +83,13 @@ public class TelaPrincipal {
         painelSuperior.atualizarContador(lista.getIndiceAtual(), lista.getTotalLivros());
     }
     
-    public void atualizarInterfaceBusca(Livro livro) {
-    painelEsquerdo.filtrarTabela(livro);
-    painelDireito.exibirLivro(livro);
+    public void atualizarInterfaceBusca(String termo, int tipo) {
+    painelEsquerdo.filtrarTabela(termo, tipo);
+    painelDireito.exibirLivro(lista.getAtual());
     painelSuperior.atualizarContador(lista.getIndiceAtual(), lista.getTotalLivros());
+    }
+    
+    public PainelEsquerdo getPainelEsquerdo(){
+        return painelEsquerdo;
     }
 }

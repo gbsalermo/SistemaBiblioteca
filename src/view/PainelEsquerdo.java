@@ -91,16 +91,28 @@ public class PainelEsquerdo extends JPanel {
     }
 }
 
-public void filtrarTabela(Livro livro) {
+public void filtrarTabela(String termo, int tipo) {
     modeloTabela.setRowCount(0);
-    if (livro != null) {
-        modeloTabela.addRow(new Object[]{
-            livro.getTitulo(),
-            livro.getAutor(),
-            livro.getAnoPublicacao(),
-            livro.getGenero(),
-            livro.getEditora()
-        });
+
+    No aux = lista.getPrimeiro();
+
+    while (aux != null) {
+        Livro l = aux.getLivro();
+
+        boolean corresponde = (tipo == 0)
+            ? l.getTitulo().equalsIgnoreCase(termo)
+            : l.getAutor().equalsIgnoreCase(termo);
+
+        if (corresponde) {
+            modeloTabela.addRow(new Object[]{
+                l.getId(),
+                l.getTitulo(),
+                l.getAutor(),
+                l.getAnoPublicacao()
+            });
+        }
+
+        aux = aux.getProximo();
     }
 }
     public JTable getTabelaLivros() {
