@@ -1,5 +1,8 @@
 package repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Importação das classes necessárias localizadas no pacote model.
 // O 'Livro' representa os dados e o 'No' representa o elo da corrente.
 import model.Livro;
@@ -220,7 +223,7 @@ public class ListaLivrosDuplamenteEncadeada {
         // Percorre a lista enquanto houver nós.
         while (aux != null) {
             // Compara o título do livro do nó atual com o título buscado.
-            if (aux.getLivro().getTitulo().equalsIgnoreCase(titulo)) {
+            if (aux.getLivro().getTitulo().toLowerCase().contains(titulo.toLowerCase())) { //Adicionei o toLowerCase e o contains para melhorar a eficiencia da pesquisa
                 this.atual = aux;
                 return aux.getLivro();
             }
@@ -246,7 +249,7 @@ public class ListaLivrosDuplamenteEncadeada {
         // Percorre a lista enquanto houver nós.
         while (aux != null) {
             // Compara o autor do livro do nó atual com o autor buscado.
-            if (aux.getLivro().getAutor().equalsIgnoreCase(autor)) {
+            if (aux.getLivro().getAutor().toLowerCase().contains(autor.toLowerCase())) {
                 this.atual = aux;
                 return aux.getLivro();
             }
@@ -468,4 +471,17 @@ public class ListaLivrosDuplamenteEncadeada {
         // Retorna a nova lista contendo todos os livros copiados
         return listaTemporaria;
     }
+
+    //Metodo para buscar por autor em formato de lista, para caso o autor tenha mais de um livro
+    public List<Livro> buscarTodosPorAutor(String autor) {
+    List<Livro> resultados = new ArrayList<>();
+    No aux = primeiro;
+    while (aux != null) {
+        if (aux.getLivro().getAutor().toLowerCase().contains(autor.toLowerCase())) {
+            resultados.add(aux.getLivro());
+        }
+        aux = aux.getProximo();
+    }
+    return resultados;
+}
 }
