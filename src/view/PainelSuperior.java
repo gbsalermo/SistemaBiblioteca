@@ -25,6 +25,11 @@ public class PainelSuperior extends JPanel{
     private ListaLivrosDuplamenteEncadeada lista;
     private PainelEsquerdo painelEsquerdo;
 
+    // Controla em qual tela a interface está (normal ou busca)
+    private int flag_tela = 0; // 0 = normal; 1 = busca
+    private String termoAtual = "";
+    private int tipoAtual = 0;
+
     // Construtor atualizado para receber as referências
     public PainelSuperior(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista, PainelEsquerdo painelEsquerdo) {
         this.painelEsquerdo = painelEsquerdo;
@@ -58,25 +63,49 @@ public class PainelSuperior extends JPanel{
         // Agora os botões do topo também controlam a lista!
         btProximo.addActionListener(e -> {
             lista.avancar();
-            tela.atualizarInterface();
+            if (flag_tela == 1) {
+                tela.getPainelEsquerdo().filtrarTabela(termoAtual, tipoAtual);
+                int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
+                atualizarContador(lista.getIndiceAtual(), filtrados);
+            } else {
+                tela.atualizarInterface();
+            }
         });
         
         btAnterior.addActionListener(e -> {
             lista.voltar();
-            tela.atualizarInterface();
+            if (flag_tela == 1) {
+                tela.getPainelEsquerdo().filtrarTabela(termoAtual, tipoAtual);
+                int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
+                atualizarContador(lista.getIndiceAtual(), filtrados);
+            } else {
+                tela.atualizarInterface();
+            }
         });
 
         btRemover.addActionListener(e -> {
             if (!lista.estaVazia()) {
                 lista.removerAtual();
-                tela.atualizarInterface();
+                if (flag_tela == 1) {
+                    painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
+                    int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
+                    atualizarContador(lista.getIndiceAtual(), filtrados);
+                } else {
+                    tela.atualizarInterface();
+                }
             }
         });
 
         btOrdenar.addActionListener(e -> {
             if (!lista.estaVazia()) {
                 lista.ordenar();
-                tela.atualizarInterface();
+                if (flag_tela == 1) {
+                    painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
+                    int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
+                    atualizarContador(lista.getIndiceAtual(), filtrados);
+                } else {
+                    tela.atualizarInterface();
+                }
             }
         });
 
@@ -87,6 +116,8 @@ public class PainelSuperior extends JPanel{
         btListar.addActionListener(e -> {
             if (!lista.estaVazia()) {
                 lista.listarTodos();
+                flag_tela = 0;
+                termoAtual = "";
                 tela.atualizarInterface();
             }
 
@@ -157,8 +188,12 @@ private void JanelaBusca() {
                     "Sucesso",
                     JOptionPane.INFORMATION_MESSAGE
                 );
+                termoAtual = termoBusca;
+                tipoAtual = 0;
+                flag_tela = 1;
                 tela.getPainelEsquerdo().filtrarTabela(termoBusca, 0);
-                //tela.atualizarInterface();
+                int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
+                atualizarContador(lista.getIndiceAtual(), filtrados);
             } else { // Se não, informo que o livro não foi encontrado
                 JOptionPane.showMessageDialog(
                     this,
@@ -191,8 +226,13 @@ private void JanelaBusca() {
                 JOptionPane.INFORMATION_MESSAGE
             );
             lista.buscarPorAutor(termoBusca);
+            termoAtual = termoBusca;
+            tipoAtual = 1;
+            flag_tela = 1;
             tela.getPainelEsquerdo().filtrarTabela(termoBusca, 1);
+            int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
+            atualizarContador(lista.getIndiceAtual(), filtrados);
+            }
         }
     }
-}
 }
