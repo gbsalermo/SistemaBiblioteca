@@ -118,4 +118,7 @@ public void filtrarTabela(String termo, int tipo) {
     public JTable getTabelaLivros() {
         return tabelaLivros;
     }
+    public int getQuantidadeLinhasTabela() {
+        return modeloTabela.getRowCount();
+    }
 }
