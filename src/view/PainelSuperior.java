@@ -7,6 +7,7 @@ import javax.swing.*;
 
 import model.Livro;
 import repository.ListaLivrosDuplamenteEncadeada;
+import model.Livro;
 
 /**
 * Classe responsavel pelo painel dos botoes e controles da parte superior.
@@ -14,41 +15,41 @@ import repository.ListaLivrosDuplamenteEncadeada;
 
 public class PainelSuperior extends JPanel{
 
-    //Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo:
+    //Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo, Listar:
 
-    private JButton btInserir, btRemover, btBuscar, btAnterior, btProximo, btOrdenar;
-    // Para mostrar a posição atual e botão para o usuário escolher como quer ordenar.
-    private JComboBox<String> cbOrdenar;
+    private JButton btRemover, btBuscar, btAnterior, btProximo, btOrdenar, btListar;
     // Para mostrar a posição atual.
     private JLabel lblContador;
 
     private TelaPrincipal tela;
     private ListaLivrosDuplamenteEncadeada lista;
+    private PainelEsquerdo painelEsquerdo;
 
     // Construtor atualizado para receber as referências
-    public PainelSuperior(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista) {
+    public PainelSuperior(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista, PainelEsquerdo painelEsquerdo) {
+        this.painelEsquerdo = painelEsquerdo;
         this.tela = tela;
         this.lista = lista;
         
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        btInserir = new JButton("INSERIR");
         btRemover = new JButton("REMOVER");
         btBuscar = new JButton("BUSCAR");
         btAnterior = new JButton("ANTERIOR");
         btProximo = new JButton("PROXIMO");
         lblContador = new JLabel(" | Livros: 0/0");
-        btOrdenar = new JButton("Ordenar");
+        btOrdenar = new JButton("ORDENAR");
+        btListar = new JButton("LISTAR");
 
-        this.add(btInserir);
-        this.add(btRemover);
         this.add(btBuscar);
+        this.add(btRemover);
         this.add(new JLabel(" | "));
         this.add(btAnterior);
         this.add(btProximo);
         this.add(lblContador);
         this.add(new JLabel(" | "));
         this.add(btOrdenar);
+        this.add(btListar);
         
         configurarEventos();
     }
@@ -81,6 +82,14 @@ public class PainelSuperior extends JPanel{
 
         btBuscar.addActionListener(e -> {
             JanelaBusca();
+        });
+
+        btListar.addActionListener(e -> {
+            if (!lista.estaVazia()) {
+                lista.listarTodos();
+                tela.atualizarInterface();
+            }
+
         });
     }
 
@@ -148,7 +157,8 @@ private void JanelaBusca() {
                     "Sucesso",
                     JOptionPane.INFORMATION_MESSAGE
                 );
-                tela.atualizarInterface();
+                tela.getPainelEsquerdo().filtrarTabela(termoBusca, 0);
+                //tela.atualizarInterface();
             } else { // Se não, informo que o livro não foi encontrado
                 JOptionPane.showMessageDialog(
                     this,
@@ -166,90 +176,22 @@ private void JanelaBusca() {
             if (livrosEncontrados == null || livrosEncontrados.size() == 0) {
                 JOptionPane.showMessageDialog(
                     this,
-                    "Nenhum livro encontrado!",
-                    "Livro não encontrado",
+                    "Autor não encontrado!",
+                    "Autor não encontrado",
                     JOptionPane.WARNING_MESSAGE
                 );
                 return;
             }
 
-            // Se encontrou apenas UM livro
-            if (livrosEncontrados.size() == 1) {
-                Livro livro = livrosEncontrados.get(0);
-                JOptionPane.showMessageDialog(
-                    this,
-                    "✅ Livro encontrado!\n\n" +
-                    "Título: " + livro.getTitulo() + "\n" +
-                    "Autor: " + livro.getAutor() + "\n" +
-                    "Ano: " + livro.getAnoPublicacao(),
-                    "Sucesso",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
-                lista.buscarPorAutor(termoBusca);
-                tela.atualizarInterface();
-            }
-            // Se encontrou VÁRIOS livros
-            else {
-                // Monto a mensagem com todos os livros encontrados
-                StringBuilder mensagem = new StringBuilder();
-                mensagem.append("⚠️ Foram encontrados ").append(livrosEncontrados.size()).append(" livros de ").append(termoBusca).append(":\n\n");
-                for (int i = 0; i < livrosEncontrados.size(); i++) {
-                    Livro livro = livrosEncontrados.get(i);
-                    mensagem.append((i + 1)).append(". ").append(livro.getTitulo()).append(" (").append(livro.getAnoPublicacao()).append(")\n");
-                }
-                mensagem.append("\nDigite o número do livro que deseja:");
-
-                // Mostro a lista e peço para escolher um livro
-                String escolhaString = JOptionPane.showInputDialog(this, mensagem.toString());
-
-                // Se clicou em Cancelar
-                if (escolhaString == null) {
-                    return;
-                }
-
-                try {
-                    // Converto a escolha para número
-                    int escolha = Integer.parseInt(escolhaString.trim());
-
-                    // Verifico se o número é válido (entre 1 e o tamanho da lista)
-                    if (escolha < 1 || escolha > livrosEncontrados.size()) {
-                        JOptionPane.showMessageDialog(
-                            this,
-                            "❌ Escolha inválida! Digite um número entre 1 e " + livrosEncontrados.size(),
-                            "Erro",
-                            JOptionPane.ERROR_MESSAGE
-                        );
-                        return;
-                    }
-
-                    // Pego o livro selecionado (escolha - 1 porque array começa em 0)
-                    Livro livroSelecionado = livrosEncontrados.get(escolha - 1);
-
-                    // Mostro o livro selecionado com os dados
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "✅ Livro selecionado!\n\n" +
-                        "Título: " + livroSelecionado.getTitulo() + "\n" +
-                        "Autor: " + livroSelecionado.getAutor() + "\n" +
-                        "Ano: " + livroSelecionado.getAnoPublicacao(),
-                        "Sucesso",
-                        JOptionPane.INFORMATION_MESSAGE
-                    );
-
-                    // Busco o livro na lista para atualizar o "atual"
-                    lista.buscarPorTitulo(livroSelecionado.getTitulo());
-                    tela.atualizarInterface();
-
-                } catch (NumberFormatException e) {
-                    // Se digitar algo que não é número
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "❌ Digite um número válido!",
-                        "Erro",
-                        JOptionPane.ERROR_MESSAGE
-                    );
-                }
-            }
+            // Se encontrou livros (um ou mais), exibe todos na tabela
+            JOptionPane.showMessageDialog(
+                this,
+                "✅ " + livrosEncontrados.size() + " livro(s) encontrado(s) de: " + termoBusca,
+                "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+            lista.buscarPorAutor(termoBusca);
+            tela.getPainelEsquerdo().filtrarTabela(termoBusca, 1);
         }
     }
 }

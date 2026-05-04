@@ -76,6 +76,7 @@ public class PainelEsquerdo extends JPanel {
         aux = aux.getProximo();
     }
 
+
     //Aqui percorre o arrayList convertido e cria uma linha da tabela
     for (Livro l : listaConvertida) {
         Object[] linha = {
@@ -87,6 +88,31 @@ public class PainelEsquerdo extends JPanel {
 
         //Adiciona essa linha na tabela no swing
         modeloTabela.addRow(linha);
+    }
+}
+
+public void filtrarTabela(String termo, int tipo) {
+    modeloTabela.setRowCount(0);
+
+    No aux = lista.getPrimeiro();
+
+    while (aux != null) {
+        Livro l = aux.getLivro();
+
+        boolean corresponde = (tipo == 0)
+            ? l.getTitulo().equalsIgnoreCase(termo)
+            : l.getAutor().equalsIgnoreCase(termo);
+
+        if (corresponde) {
+            modeloTabela.addRow(new Object[]{
+                l.getId(),
+                l.getTitulo(),
+                l.getAutor(),
+                l.getAnoPublicacao()
+            });
+        }
+
+        aux = aux.getProximo();
     }
 }
     public JTable getTabelaLivros() {
