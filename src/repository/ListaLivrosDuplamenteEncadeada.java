@@ -476,9 +476,14 @@ public class ListaLivrosDuplamenteEncadeada {
     public List<Livro> buscarTodosPorAutor(String autor) {
     List<Livro> resultados = new ArrayList<>();
     No aux = primeiro;
+    boolean primeiroEncontrado = true;
     while (aux != null) {
         if (aux.getLivro().getAutor().toLowerCase().contains(autor.toLowerCase())) {
             resultados.add(aux.getLivro());
+            if (primeiroEncontrado) {
+                this.atual = aux;
+                primeiroEncontrado = false;
+            }
         }
         aux = aux.getProximo();
     }

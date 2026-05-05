@@ -10,12 +10,12 @@ import repository.ListaLivrosDuplamenteEncadeada;
 import model.Livro;
 
 /**
-* Classe responsavel pelo painel dos botoes e controles da parte superior.
-*/
+ * Classe responsavel pelo painel dos botoes e controles da parte superior.
+ */
 
-public class PainelSuperior extends JPanel{
+public class PainelSuperior extends JPanel {
 
-    //Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo, Listar:
+    // Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo, Listar:
 
     private JButton btRemover, btBuscar, btAnterior, btProximo, btOrdenar, btListar;
     // Para mostrar a posição atual.
@@ -35,7 +35,7 @@ public class PainelSuperior extends JPanel{
         this.painelEsquerdo = painelEsquerdo;
         this.tela = tela;
         this.lista = lista;
-        
+
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         btRemover = new JButton("REMOVER");
@@ -55,7 +55,7 @@ public class PainelSuperior extends JPanel{
         this.add(new JLabel(" | "));
         this.add(btOrdenar);
         this.add(btListar);
-        
+
         configurarEventos();
     }
 
@@ -71,7 +71,7 @@ public class PainelSuperior extends JPanel{
                 tela.atualizarInterface();
             }
         });
-        
+
         btAnterior.addActionListener(e -> {
             lista.voltar();
             if (flag_tela == 1) {
@@ -132,77 +132,79 @@ public class PainelSuperior extends JPanel{
         }
     }
 
-   // Método responsável pela janela de busca
-private void JanelaBusca() {
-    // Crio um painel e defino o layout como vertical
-    JPanel painelBusca = new JPanel();
-    painelBusca.setLayout(new BoxLayout(painelBusca, BoxLayout.Y_AXIS));
+    // Método responsável pela janela de busca
+    private void JanelaBusca() {
+        // Crio um painel e defino o layout como vertical
+        JPanel painelBusca = new JPanel();
+        painelBusca.setLayout(new BoxLayout(painelBusca, BoxLayout.Y_AXIS));
 
-    // Aqui eu crio o array e a regra para as duas opções de busca e a caixa para digitar a busca
-    String[] opcoes = {"Buscar por Título", "Buscar por Autor"};
-    JComboBox<String> cbBusca = new JComboBox<>(opcoes);
-    JTextField txtBusca = new JTextField(20);
+        // Aqui eu crio o array e a regra para as duas opções de busca e a caixa para
+        // digitar a busca
+        String[] opcoes = { "Buscar por Título", "Buscar por Autor" };
+        JComboBox<String> cbBusca = new JComboBox<>(opcoes);
+        JTextField txtBusca = new JTextField(20);
 
-    // Adiciono os componentes ao painel
-    painelBusca.add(new JLabel("Como gostaria de buscar?"));
-    painelBusca.add(cbBusca);
-    painelBusca.add(new JLabel("Digite a busca:"));
-    painelBusca.add(txtBusca);
+        // Adiciono os componentes ao painel
+        painelBusca.add(new JLabel("Como gostaria de buscar?"));
+        painelBusca.add(cbBusca);
+        painelBusca.add(new JLabel("Digite a busca:"));
+        painelBusca.add(txtBusca);
 
-    // Aqui eu crio a janela que vai aparecer e seu retorno, com os botões ok e cancelar e um ícone de interrogação para confirmar a busca
-    int resultado = JOptionPane.showConfirmDialog(
-        this,
-        painelBusca,
-        "Buscar Livro",
-        JOptionPane.OK_CANCEL_OPTION,
-        JOptionPane.QUESTION_MESSAGE
-    );
-
-    // Verifico se o usuário clicou em ok
-    if (resultado == JOptionPane.OK_OPTION) {
-        String termoBusca = txtBusca.getText().trim(); // Salvo o valor digitado
-
-        // Verifico se é vazio e dou o alerta
-        if (termoBusca.isEmpty()) {
-            JOptionPane.showMessageDialog(
+        // Aqui eu crio a janela que vai aparecer e seu retorno, com os botões ok e
+        // cancelar e um ícone de interrogação para confirmar a busca
+        int resultado = JOptionPane.showConfirmDialog(
                 this,
-                "Por favor, digite um termo de busca!",
-                "Campo Vazio",
-                JOptionPane.WARNING_MESSAGE
-            );
-            return;
-        }
+                painelBusca,
+                "Buscar Livro",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
 
-        // Se escolheu buscar por TÍTULO
-        if (cbBusca.getSelectedIndex() == 0) {
-            Livro livroEncontrado = lista.buscarPorTitulo(termoBusca); // Busco o livro pelo título
+        // Verifico se o usuário clicou em ok
+        if (resultado == JOptionPane.OK_OPTION) {
+            String termoBusca = txtBusca.getText().trim(); // Salvo o valor digitado
 
-            // Se encontrado, mostro os dados
-            if (livroEncontrado != null) {
+            // Verifico se é vazio e dou o alerta
+            if (termoBusca.isEmpty()) {
                 JOptionPane.showMessageDialog(
-                    this,
-                    "✅ Livro encontrado!\n\n" +
-                    "Título: " + livroEncontrado.getTitulo() + "\n" +
-                    "Autor: " + livroEncontrado.getAutor() + "\n" +
-                    "Ano: " + livroEncontrado.getAnoPublicacao(),
-                    "Sucesso",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
-                termoAtual = termoBusca;
-                tipoAtual = 0;
-                flag_tela = 1;
-                tela.getPainelEsquerdo().filtrarTabela(termoBusca, 0);
-                int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
-                atualizarContador(lista.getIndiceAtual(), filtrados);
-            } else { // Se não, informo que o livro não foi encontrado
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Nenhum livro encontrado!",
-                    "Livro não encontrado",
-                    JOptionPane.WARNING_MESSAGE
-                );
+                        this,
+                        "Por favor, digite um termo de busca!",
+                        "Campo Vazio",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
             }
-        }
+
+            // Se escolheu buscar por TÍTULO
+    if (cbBusca.getSelectedIndex() == 0) {
+    Livro livroEncontrado = lista.buscarPorTitulo(termoBusca); // Busco o livro pelo título
+
+    // Se encontrado, mostro os dados
+    if (livroEncontrado != null) {
+        JOptionPane.showMessageDialog(
+                this,
+                "✅ Livro encontrado!\n\n" +
+                        "Título: " + livroEncontrado.getTitulo() + "\n" +
+                        "Autor: " + livroEncontrado.getAutor() + "\n" +
+                        "Ano: " + livroEncontrado.getAnoPublicacao(),
+                "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE);
+        termoAtual = termoBusca;
+        tipoAtual = 0;
+        flag_tela = 1;
+        tela.getPainelEsquerdo().filtrarTabela(termoBusca, 0);
+        
+       
+        tela.getPainelDireito().exibirLivro(livroEncontrado);
+        
+        int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
+        atualizarContador(lista.getIndiceAtual(), filtrados);
+    } else { // Se não, informo que o livro não foi encontrado
+        JOptionPane.showMessageDialog(
+                this,
+                "Nenhum livro encontrado!",
+                "Livro não encontrado",
+                JOptionPane.WARNING_MESSAGE);
+    }
+}
         // Se escolheu buscar por AUTOR
         else {
             List<Livro> livrosEncontrados = lista.buscarTodosPorAutor(termoBusca); // Busco todos os livros do autor
@@ -210,29 +212,36 @@ private void JanelaBusca() {
             // Se não encontrou nada
             if (livrosEncontrados == null || livrosEncontrados.size() == 0) {
                 JOptionPane.showMessageDialog(
-                    this,
-                    "Autor não encontrado!",
-                    "Autor não encontrado",
-                    JOptionPane.WARNING_MESSAGE
-                );
+                        this,
+                        "Autor não encontrado!",
+                        "Autor não encontrado",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             // Se encontrou livros (um ou mais), exibe todos na tabela
             JOptionPane.showMessageDialog(
-                this,
-                "✅ " + livrosEncontrados.size() + " livro(s) encontrado(s) de: " + termoBusca,
-                "Sucesso",
-                JOptionPane.INFORMATION_MESSAGE
-            );
+                    this,
+                    "✅ " + livrosEncontrados.size() + " livro(s) encontrado(s) de: " + termoBusca,
+                    "Sucesso",
+                    JOptionPane.INFORMATION_MESSAGE);
+            
+            // Move para o primeiro livro encontrado
             lista.buscarPorAutor(termoBusca);
+            
+            // Configura as variáveis de estado
             termoAtual = termoBusca;
             tipoAtual = 1;
             flag_tela = 1;
+
+            // Atualiza a tabela com os livros encontrados
             tela.getPainelEsquerdo().filtrarTabela(termoBusca, 1);
+
+            // Atualiza o painel direito com o primeiro livro
+            tela.getPainelDireito().exibirLivro(livrosEncontrados.get(0));
+
+            // Atualiza o contador
             int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
-            atualizarContador(lista.getIndiceAtual(), filtrados);
-            }
+            atualizarContador(0, filtrados);
         }
-    }
-}
+}}}

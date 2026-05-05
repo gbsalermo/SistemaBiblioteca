@@ -83,13 +83,11 @@ public class TelaPrincipal {
         painelSuperior.atualizarContador(lista.getIndiceAtual(), lista.getTotalLivros());
     }
     
-    public void atualizarInterfaceBusca(String termo, int tipo) {
-    painelEsquerdo.filtrarTabela(termo, tipo);
-    painelDireito.exibirLivro(lista.getAtual());
-    painelSuperior.atualizarContador(lista.getIndiceAtual(), lista.getTotalLivros());
-    }
-    
     public PainelEsquerdo getPainelEsquerdo(){
         return painelEsquerdo;
     }
+
+    public PainelDireito getPainelDireito() {
+    return painelDireito;
+}
 }

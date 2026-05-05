@@ -49,8 +49,25 @@ public class PainelEsquerdo extends JPanel {
         // CENTER significa que ocupa todo o espaço disponível.
         this.add(scrollPane, BorderLayout.CENTER);
 
-        // 2. Opcional: Adicionar um evento de clique na tabela.
-        // Quando o usuário clica em uma linha, a TelaPrincipal poderia buscar esse livro.
+tabelaLivros.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+            int linhaSelecionada = tabelaLivros.getSelectedRow();
+            
+            if (linhaSelecionada != -1) {
+                // Pega o título da linha selecionada
+                String titulo = (String) modeloTabela.getValueAt(linhaSelecionada, 1);
+                
+                // Busca o livro pelo título
+                Livro livroSelecionado = lista.buscarPorTitulo(titulo);
+                
+                // Atualiza o painel direito
+                if (livroSelecionado != null) {
+                    tela.getPainelDireito().exibirLivro(livroSelecionado);
+                }
+            }
+        }
+    });
     }
 
     /**
@@ -100,8 +117,8 @@ public void filtrarTabela(String termo, int tipo) {
         Livro l = aux.getLivro();
 
         boolean corresponde = (tipo == 0)
-            ? l.getTitulo().equalsIgnoreCase(termo)
-            : l.getAutor().equalsIgnoreCase(termo);
+            ? l.getTitulo().toLowerCase().contains(termo.toLowerCase())
+            : l.getAutor().toLowerCase().contains(termo.toLowerCase());
 
         if (corresponde) {
             modeloTabela.addRow(new Object[]{
