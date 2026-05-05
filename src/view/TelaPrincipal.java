@@ -12,22 +12,23 @@ public class TelaPrincipal {
 
     // Atributos:
 
-    private ListaLivrosDuplamenteEncadeada lista; //teste
+    private ListaLivrosDuplamenteEncadeada lista; // teste
     private JFrame janela;
     private PainelSuperior painelSuperior;
     private PainelEsquerdo painelEsquerdo;
     private PainelDireito painelDireito;
-            
-    // 1. A instância única da sua lista.
-    //private ListaLivrosDuplamenteEncadeada lista = new ListaLivrosDuplamenteEncadeada();
-    //teste
-   
 
-     // Construtor principal da classe, recebendo a lista pronta e realizando a injeção de dependência
+    // 1. A instância única da sua lista.
+    // private ListaLivrosDuplamenteEncadeada lista = new
+    // ListaLivrosDuplamenteEncadeada();
+    // teste
+
+    // Construtor principal da classe, recebendo a lista pronta e realizando a
+    // injeção de dependência
     public TelaPrincipal(ListaLivrosDuplamenteEncadeada lista) {
-    this.lista = lista;
-    // Chama o método responsável por montar a interface gráfica.    
-    inicializar();
+        this.lista = lista;
+        // Chama o método responsável por montar a interface gráfica.
+        inicializar();
     }
 
     public TelaPrincipal() {
@@ -36,10 +37,10 @@ public class TelaPrincipal {
         this(new ListaLivrosDuplamenteEncadeada());
     }
 
-    //Mu
+    // Mu
 
     public void inicializar() {
-        
+
         // Criação da janela e o titulo.
         janela = new JFrame("Sistema de Biblioteca");
         // Tamanho da tela, largxalt em pixels.
@@ -47,13 +48,13 @@ public class TelaPrincipal {
         // Comportamento para fechar a janela e centralizar janela.
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setLocationRelativeTo(null);
-        //Criando painel com BorderLayout
+        // Criando painel com BorderLayout
         JPanel painelPrincipal = new JPanel(new BorderLayout());
 
         // 2. Passar a 'lista' e a própria 'TelaPrincipal' para os painéis.
         // Isso permite que os botões dentro dos painéis chamem métodos daqui.
         painelEsquerdo = new PainelEsquerdo(this, lista);
-        painelSuperior = new PainelSuperior(this, lista, painelEsquerdo); 
+        painelSuperior = new PainelSuperior(this, lista, painelEsquerdo);
         painelDireito = new PainelDireito(this, lista);
         // Adiciona cada painel em uma posição.
         painelPrincipal.add(painelSuperior, BorderLayout.NORTH);
@@ -69,25 +70,30 @@ public class TelaPrincipal {
     }
 
     /**
-    * Método que orquestra a atualização de todos os componentes da tela.
-    * Sempre que algo mudar na lista (add, remover, buscar, navegar), chamamos este método.
-    */
+     * Método que orquestra a atualização de todos os componentes da tela.
+     * Sempre que algo mudar na lista (add, remover, buscar, navegar), chamamos este
+     * método.
+     */
     public void atualizarInterface() {
         // 1. Atualiza a tabela (O método correto é atualizarTabela)
         painelEsquerdo.atualizarTabela();
-    
+
         // 2. Atualiza os campos de texto no painel direito
         painelDireito.exibirLivro(lista.getAtual());
-    
+
         // 3. Atualiza o contador lá em cima
         painelSuperior.atualizarContador(lista.getIndiceAtual(), lista.getTotalLivros());
     }
-    
-    public PainelEsquerdo getPainelEsquerdo(){
+
+    public PainelEsquerdo getPainelEsquerdo() {
         return painelEsquerdo;
     }
 
     public PainelDireito getPainelDireito() {
-    return painelDireito;
-}
+        return painelDireito;
+    }
+
+    public PainelSuperior getPainelSuperior() {
+        return painelSuperior;
+    }
 }

@@ -64,6 +64,7 @@ tabelaLivros.addMouseListener(new java.awt.event.MouseAdapter() {
                 // Atualiza o painel direito
                 if (livroSelecionado != null) {
                     tela.getPainelDireito().exibirLivro(livroSelecionado);
+                    tela.getPainelSuperior().atualizarContador(linhaSelecionada, tabelaLivros.getRowCount()); //Atualiza o contado ao selecionar a linha
                 }
             }
         }

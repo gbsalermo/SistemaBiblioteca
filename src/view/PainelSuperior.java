@@ -29,9 +29,11 @@ public class PainelSuperior extends JPanel {
     private int flag_tela = 0; // 0 = normal; 1 = busca
     private String termoAtual = "";
     private int tipoAtual = 0;
+    private JTable tabelaLivros;
 
     // Construtor atualizado para receber as referências
     public PainelSuperior(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista, PainelEsquerdo painelEsquerdo) {
+        this.tabelaLivros = painelEsquerdo.getTabelaLivros();
         this.painelEsquerdo = painelEsquerdo;
         this.tela = tela;
         this.lista = lista;
@@ -61,27 +63,67 @@ public class PainelSuperior extends JPanel {
 
     private void configurarEventos() {
         // Agora os botões do topo também controlam a lista!
-        btProximo.addActionListener(e -> {
-            lista.avancar();
-            if (flag_tela == 1) {
-                tela.getPainelEsquerdo().filtrarTabela(termoAtual, tipoAtual);
-                int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
-                atualizarContador(lista.getIndiceAtual(), filtrados);
-            } else {
-                tela.atualizarInterface();
-            }
-        });
+        // Evento do botão PRÓXIMO
+    btProximo.addActionListener(e -> {
+    // Verifica se está em modo busca
+    if (flag_tela == 1) {
+        // Em modo busca, navega na tabela filtrada
+        int linhaAtual = tabelaLivros.getSelectedRow(); // Pega a linha selecionada
+        
+        // Verifica se não está na última linha
+        if (linhaAtual < tabelaLivros.getRowCount() - 1) {
+            // Seleciona a próxima linha
+            tabelaLivros.setRowSelectionInterval(linhaAtual + 1, linhaAtual + 1);
+            
+            // Pega o título do livro da próxima linha
+            String titulo = (String) tabelaLivros.getModel().getValueAt(linhaAtual + 1, 1);
+            
+            // Busca o livro pelo título
+            Livro livro = lista.buscarPorTitulo(titulo);
+            
+            // Exibe o livro no painel direito
+            tela.getPainelDireito().exibirLivro(livro);
+            
+            // Atualiza o contador
+            atualizarContador(linhaAtual + 1, tabelaLivros.getRowCount());
+        }
+    } else {
+        // Em modo normal, avança na lista original
+        lista.avancar();
+        tela.atualizarInterface();
+    }
+});
 
-        btAnterior.addActionListener(e -> {
-            lista.voltar();
-            if (flag_tela == 1) {
-                tela.getPainelEsquerdo().filtrarTabela(termoAtual, tipoAtual);
-                int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
-                atualizarContador(lista.getIndiceAtual(), filtrados);
-            } else {
-                tela.atualizarInterface();
-            }
-        });
+// Evento do botão ANTERIOR
+btAnterior.addActionListener(e -> {
+    // Verifica se está em modo busca
+    if (flag_tela == 1) {
+        // Em modo busca, navega na tabela filtrada
+        int linhaAtual = tabelaLivros.getSelectedRow(); // Pega a linha selecionada
+        
+        // Verifica se não está na primeira linha
+        if (linhaAtual > 0) {
+            // Seleciona a linha anterior
+            tabelaLivros.setRowSelectionInterval(linhaAtual - 1, linhaAtual - 1);
+            
+            // Pega o título do livro da linha anterior
+            String titulo = (String) tabelaLivros.getModel().getValueAt(linhaAtual - 1, 1);
+            
+            // Busca o livro pelo título
+            Livro livro = lista.buscarPorTitulo(titulo);
+            
+            // Exibe o livro no painel direito
+            tela.getPainelDireito().exibirLivro(livro);
+            
+            // Atualiza o contador
+            atualizarContador(linhaAtual - 1, tabelaLivros.getRowCount());
+        }
+    } else {
+        // Em modo normal, volta na lista original
+        lista.voltar();
+        tela.atualizarInterface();
+    }
+});
 
         btRemover.addActionListener(e -> {
             if (!lista.estaVazia()) {
@@ -174,74 +216,75 @@ public class PainelSuperior extends JPanel {
             }
 
             // Se escolheu buscar por TÍTULO
-    if (cbBusca.getSelectedIndex() == 0) {
-    Livro livroEncontrado = lista.buscarPorTitulo(termoBusca); // Busco o livro pelo título
+            if (cbBusca.getSelectedIndex() == 0) {
+                Livro livroEncontrado = lista.buscarPorTitulo(termoBusca); // Busco o livro pelo título
 
-    // Se encontrado, mostro os dados
-    if (livroEncontrado != null) {
-        JOptionPane.showMessageDialog(
-                this,
-                "✅ Livro encontrado!\n\n" +
-                        "Título: " + livroEncontrado.getTitulo() + "\n" +
-                        "Autor: " + livroEncontrado.getAutor() + "\n" +
-                        "Ano: " + livroEncontrado.getAnoPublicacao(),
-                "Sucesso",
-                JOptionPane.INFORMATION_MESSAGE);
-        termoAtual = termoBusca;
-        tipoAtual = 0;
-        flag_tela = 1;
-        tela.getPainelEsquerdo().filtrarTabela(termoBusca, 0);
-        
-       
-        tela.getPainelDireito().exibirLivro(livroEncontrado);
-        
-        int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
-        atualizarContador(lista.getIndiceAtual(), filtrados);
-    } else { // Se não, informo que o livro não foi encontrado
-        JOptionPane.showMessageDialog(
-                this,
-                "Nenhum livro encontrado!",
-                "Livro não encontrado",
-                JOptionPane.WARNING_MESSAGE);
-    }
-}
-        // Se escolheu buscar por AUTOR
-        else {
-            List<Livro> livrosEncontrados = lista.buscarTodosPorAutor(termoBusca); // Busco todos os livros do autor
+                // Se encontrado, mostro os dados
+                if (livroEncontrado != null) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "✅ Livro encontrado!\n\n" +
+                                    "Título: " + livroEncontrado.getTitulo() + "\n" +
+                                    "Autor: " + livroEncontrado.getAutor() + "\n" +
+                                    "Ano: " + livroEncontrado.getAnoPublicacao(),
+                            "Sucesso",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    termoAtual = termoBusca;
+                    tipoAtual = 0;
+                    flag_tela = 1;
+                    tela.getPainelEsquerdo().filtrarTabela(termoBusca, 0);
 
-            // Se não encontrou nada
-            if (livrosEncontrados == null || livrosEncontrados.size() == 0) {
+                    tela.getPainelDireito().exibirLivro(livroEncontrado);
+
+                    int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
+                    atualizarContador(lista.getIndiceAtual(), filtrados);
+                } else { // Se não, informo que o livro não foi encontrado
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Nenhum livro encontrado!",
+                            "Livro não encontrado",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+            }
+            // Se escolheu buscar por AUTOR
+            else {
+                List<Livro> livrosEncontrados = lista.buscarTodosPorAutor(termoBusca); // Busco todos os livros do autor
+
+                // Se não encontrou nada
+                if (livrosEncontrados == null || livrosEncontrados.size() == 0) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Autor não encontrado!",
+                            "Autor não encontrado",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                // Se encontrou livros (um ou mais), exibe todos na tabela
                 JOptionPane.showMessageDialog(
                         this,
-                        "Autor não encontrado!",
-                        "Autor não encontrado",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
+                        "✅ " + livrosEncontrados.size() + " livro(s) encontrado(s) de: " + termoBusca,
+                        "Sucesso",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                // Move para o primeiro livro encontrado
+                lista.buscarPorAutor(termoBusca);
+
+                // Configura as variáveis de estado
+                termoAtual = termoBusca;
+                tipoAtual = 1;
+                flag_tela = 1;
+
+                // Atualiza a tabela com os livros encontrados
+                tela.getPainelEsquerdo().filtrarTabela(termoBusca, 1);
+
+                // Atualiza o painel direito com o primeiro livro
+                tela.getPainelDireito().exibirLivro(livrosEncontrados.get(0));
+
+                // Atualiza o contador
+                int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
+                atualizarContador(0, filtrados);
             }
-
-            // Se encontrou livros (um ou mais), exibe todos na tabela
-            JOptionPane.showMessageDialog(
-                    this,
-                    "✅ " + livrosEncontrados.size() + " livro(s) encontrado(s) de: " + termoBusca,
-                    "Sucesso",
-                    JOptionPane.INFORMATION_MESSAGE);
-            
-            // Move para o primeiro livro encontrado
-            lista.buscarPorAutor(termoBusca);
-            
-            // Configura as variáveis de estado
-            termoAtual = termoBusca;
-            tipoAtual = 1;
-            flag_tela = 1;
-
-            // Atualiza a tabela com os livros encontrados
-            tela.getPainelEsquerdo().filtrarTabela(termoBusca, 1);
-
-            // Atualiza o painel direito com o primeiro livro
-            tela.getPainelDireito().exibirLivro(livrosEncontrados.get(0));
-
-            // Atualiza o contador
-            int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
-            atualizarContador(0, filtrados);
         }
-}}}
+    }
+}
