@@ -3,6 +3,8 @@ package view;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import javax.swing.table.DefaultTableModel;
 
@@ -10,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Livro;
 import model.No;
-import repository.ListaLivrosDuplamenteEncadeada;
 import repository.ListaLivrosDuplamenteEncadeada;
 
 /* 
@@ -49,93 +50,107 @@ public class PainelEsquerdo extends JPanel {
         // CENTER significa que ocupa todo o espaço disponível.
         this.add(scrollPane, BorderLayout.CENTER);
 
-tabelaLivros.addMouseListener(new java.awt.event.MouseAdapter() {
-        @Override
-        public void mouseClicked(java.awt.event.MouseEvent e) {
-            int linhaSelecionada = tabelaLivros.getSelectedRow();
-            
-            if (linhaSelecionada != -1) {
-                // Pega o título da linha selecionada
-                String titulo = (String) modeloTabela.getValueAt(linhaSelecionada, 1);
+        tabelaLivros.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int linhaSelecionada = tabelaLivros.getSelectedRow();
                 
-                // Busca o livro pelo título
-                Livro livroSelecionado = lista.buscarPorTitulo(titulo);
-                
-                // Atualiza o painel direito
-                if (livroSelecionado != null) {
-                    tela.getPainelDireito().exibirLivro(livroSelecionado);
-                    tela.getPainelSuperior().atualizarContador(linhaSelecionada, tabelaLivros.getRowCount()); //Atualiza o contado ao selecionar a linha
+                if (linhaSelecionada != -1) {
+                    // Pega o título da linha selecionada
+                    String titulo = (String) modeloTabela.getValueAt(linhaSelecionada, 1);
+                    
+                    // Busca o livro pelo título
+                    Livro livroSelecionado = lista.buscarPorTitulo(titulo);
+                    
+                    // VERIFICA SE FOI DUPLO CLIQUE (CLICK COUNT = 2)
+                    if (e.getClickCount() == 2 && livroSelecionado != null) {
+                        // Abre a janela modal
+                        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(PainelEsquerdo.this);
+                        TelaModalLivro modal = new TelaModalLivro(parent, livroSelecionado);
+                        modal.setVisible(true);
+                        
+                        // Se salvou alguma alteração, atualiza a tabela
+                        if (modal.salvou()) {
+                            atualizarTabela();
+                            tela.getPainelSuperior().atualizarContador(
+                                lista.getIndiceAtual(), 
+                                tabelaLivros.getRowCount()
+                            );
+                        }
+                    } else {
+                        // Se for clique único, apenas atualiza o contador
+                        tela.getPainelSuperior().atualizarContador(linhaSelecionada, tabelaLivros.getRowCount());
+                    }
                 }
             }
-        }
-    });
-    }
+        });
+    } // <--- ESTA CHAVE FECHA O CONSTRUTOR! (É ISSO QUE FALTAVA)
 
     /**
     * Limpa a tabela e insere todos os livros vindos da lista encadeada.
     */
+    public void atualizarTabela() {
+        //Zera a tabela removendo linhas existentes
+        modeloTabela.setRowCount(0);
 
- public void atualizarTabela() {
-    //Zera a tabela removendo linhas existentes
-    modeloTabela.setRowCount(0);
+        //Pega a lista encadeada do repositorio
+        ListaLivrosDuplamenteEncadeada listaEncadeada = lista.listarTodos();
+        
+        //Crio um array para armazenar esta lista
+        List<Livro> listaConvertida = new ArrayList<>();
 
-    //Pega a lista encadeada do repositorio
-    ListaLivrosDuplamenteEncadeada listaEncadeada = lista.listarTodos();
-    
-    //Crio um array para armazenar esta lista
-    List<Livro> listaConvertida = new ArrayList<>();
+        //Criação de ponteiro auxiliar que inicia no primeiro no da lista
+        No aux = listaEncadeada.getPrimeiro();
 
-    //Criação de ponteiro auxiliar que inicia no primeiro no da lista
-    No aux = listaEncadeada.getPrimeiro();
+        //Segue a lista até o final(null), pega o livro do nó atual e adiciona no array, depois avança para o prox. nó e verifica a condição
+        while (aux != null) {
+            listaConvertida.add(aux.getLivro());
+            aux = aux.getProximo();
+        }
 
-    //Segue a lista até o final(null), pega o livro do nó atual e adiciona no array, depois avança para o prox. nó e verifica a condição
-    while (aux != null) {
-        listaConvertida.add(aux.getLivro());
-        aux = aux.getProximo();
-    }
-
-
-    //Aqui percorre o arrayList convertido e cria uma linha da tabela
-    for (Livro l : listaConvertida) {
-        Object[] linha = {
-            l.getId(),
-            l.getTitulo(),
-            l.getAutor(),
-            l.getAnoPublicacao()
-        };
-
-        //Adiciona essa linha na tabela no swing
-        modeloTabela.addRow(linha);
-    }
-}
-
-public void filtrarTabela(String termo, int tipo) {
-    modeloTabela.setRowCount(0);
-
-    No aux = lista.getPrimeiro();
-
-    while (aux != null) {
-        Livro l = aux.getLivro();
-
-        boolean corresponde = (tipo == 0)
-            ? l.getTitulo().toLowerCase().contains(termo.toLowerCase())
-            : l.getAutor().toLowerCase().contains(termo.toLowerCase());
-
-        if (corresponde) {
-            modeloTabela.addRow(new Object[]{
+        //Aqui percorre o arrayList convertido e cria uma linha da tabela
+        for (Livro l : listaConvertida) {
+            Object[] linha = {
                 l.getId(),
                 l.getTitulo(),
                 l.getAutor(),
                 l.getAnoPublicacao()
-            });
-        }
+            };
 
-        aux = aux.getProximo();
+            //Adiciona essa linha na tabela no swing
+            modeloTabela.addRow(linha);
+        }
     }
-}
+
+    public void filtrarTabela(String termo, int tipo) {
+        modeloTabela.setRowCount(0);
+
+        No aux = lista.getPrimeiro();
+
+        while (aux != null) {
+            Livro l = aux.getLivro();
+
+            boolean corresponde = (tipo == 0)
+                ? l.getTitulo().toLowerCase().contains(termo.toLowerCase())
+                : l.getAutor().toLowerCase().contains(termo.toLowerCase());
+
+            if (corresponde) {
+                modeloTabela.addRow(new Object[]{
+                    l.getId(),
+                    l.getTitulo(),
+                    l.getAutor(),
+                    l.getAnoPublicacao()
+                });
+            }
+
+            aux = aux.getProximo();
+        }
+    }
+    
     public JTable getTabelaLivros() {
         return tabelaLivros;
     }
+    
     public int getQuantidadeLinhasTabela() {
         return modeloTabela.getRowCount();
     }
