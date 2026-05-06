@@ -138,18 +138,18 @@ btAnterior.addActionListener(e -> {
             }
         });
 
-        btOrdenar.addActionListener(e -> {
-            if (!lista.estaVazia()) {
-                lista.ordenar();
-                if (flag_tela == 1) {
-                    painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
-                    int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
-                    atualizarContador(lista.getIndiceAtual(), filtrados);
-                } else {
-                    tela.atualizarInterface();
-                }
-            }
-        });
+        // btOrdenar.addActionListener(e -> {
+        //     if (!lista.estaVazia()) {
+        //         lista.ordenar();
+        //         if (flag_tela == 1) {
+        //             painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
+        //             int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
+        //             atualizarContador(lista.getIndiceAtual(), filtrados);
+        //         } else {
+        //             tela.atualizarInterface();
+        //         }
+        //     }
+        // });
 
         btBuscar.addActionListener(e -> {
             JanelaBusca();

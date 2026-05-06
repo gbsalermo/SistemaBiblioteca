@@ -147,7 +147,7 @@ public class ListaLivrosDuplamenteEncadeada {
     * negativo = menor
     * zero = iguais 
     */
-    private int comparar(No a, No b){
+    private int compararTitulo(No a, No b){
         // Compara primeiro o titulo, se sao iguais, faz o desempate no proximo
        if(!a.getLivro().getTitulo().equalsIgnoreCase(b.getLivro().getTitulo())){
         return a.getLivro().getTitulo().compareToIgnoreCase(b.getLivro().getTitulo());
@@ -159,6 +159,38 @@ public class ListaLivrosDuplamenteEncadeada {
        // finaliza o desempate comparando o ano
        if(a.getLivro().getAnoPublicacao() != b.getLivro().getAnoPublicacao()){
         return a.getLivro().getAnoPublicacao() - b.getLivro().getAnoPublicacao();
+       }
+       // os livros sao iguais
+       return 0;
+    }
+    private int compararAutor(No a, No b){
+        // Compara o autor, se sao iguais, faz o desempate no proximo
+        if(!a.getLivro().getAutor().equalsIgnoreCase(b.getLivro().getAutor())){
+         return a.getLivro().getAutor().compareToIgnoreCase(b.getLivro().getAutor());
+        }
+        // Compara primeiro o titulo, se sao iguais, faz o desempate no proximo
+       if(!a.getLivro().getTitulo().equalsIgnoreCase(b.getLivro().getTitulo())){
+        return a.getLivro().getTitulo().compareToIgnoreCase(b.getLivro().getTitulo());
+       }
+       // finaliza o desempate comparando o ano
+       if(a.getLivro().getAnoPublicacao() != b.getLivro().getAnoPublicacao()){
+        return a.getLivro().getAnoPublicacao() - b.getLivro().getAnoPublicacao();
+       }
+       // os livros sao iguais
+       return 0;
+    }
+    private int compararAno(No a, No b){
+        // finaliza o desempate comparando o ano
+        if(a.getLivro().getAnoPublicacao() != b.getLivro().getAnoPublicacao()){
+         return a.getLivro().getAnoPublicacao() - b.getLivro().getAnoPublicacao();
+        }
+        // Compara primeiro o titulo, se sao iguais, faz o desempate no proximo
+       if(!a.getLivro().getTitulo().equalsIgnoreCase(b.getLivro().getTitulo())){
+        return a.getLivro().getTitulo().compareToIgnoreCase(b.getLivro().getTitulo());
+       }
+       // Compara o autor, se sao iguais, faz o desempate no proximo
+       if(!a.getLivro().getAutor().equalsIgnoreCase(b.getLivro().getAutor())){
+        return a.getLivro().getAutor().compareToIgnoreCase(b.getLivro().getAutor());
        }
        // os livros sao iguais
        return 0;
@@ -268,23 +300,30 @@ public class ListaLivrosDuplamenteEncadeada {
     * O processo se repete até que uma passagem completa ocorra sem nenhuma troca, garantindo que todos os elementos estejam em ordem crescente.
     */
 
-    public void ordenar(){
-        if(primeiro == null) return;
-        boolean trocado;
+    public void ordenarPorColuna(int coluna) {
+    if (primeiro == null) return;
+    boolean trocado;
 
-        do{
-            No atual = primeiro;
-            trocado = false;
+    do {
+        No aux = primeiro;
+        trocado = false;
 
-            while(atual != null && atual.getProximo() != null){
-                if(comparar(atual, atual.getProximo()) > 0){
-                    atual = trocarComProximo(atual);
-                    trocado = true;
-                }else{
-                    atual = atual.getProximo();
-                }
+        while (aux != null && aux.getProximo() != null) {
+            int cmp = switch (coluna) {
+                case 1 -> compararTitulo(aux, aux.getProximo());
+                case 2 -> compararAutor(aux, aux.getProximo());
+                case 3 -> compararAno(aux, aux.getProximo());
+                default -> compararTitulo(aux, aux.getProximo());
+            };
+
+            if (cmp > 0) {
+                aux = trocarComProximo(aux);
+                trocado = true;
+            } else {
+                aux = aux.getProximo();
             }
-        }while(trocado);
+        }
+    } while (trocado);
     }
 
     // Inserir:

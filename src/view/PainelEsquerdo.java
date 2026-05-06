@@ -50,38 +50,12 @@ public class PainelEsquerdo extends JPanel {
         // CENTER significa que ocupa todo o espaço disponível.
         this.add(scrollPane, BorderLayout.CENTER);
 
-        tabelaLivros.addMouseListener(new java.awt.event.MouseAdapter() {
+        tabelaLivros.getTableHeader().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                int linhaSelecionada = tabelaLivros.getSelectedRow();
-                
-                if (linhaSelecionada != -1) {
-                    // Pega o título da linha selecionada
-                    String titulo = (String) modeloTabela.getValueAt(linhaSelecionada, 1);
-                    
-                    // Busca o livro pelo título
-                    Livro livroSelecionado = lista.buscarPorTitulo(titulo);
-                    
-                    // VERIFICA SE FOI DUPLO CLIQUE (CLICK COUNT = 2)
-                    if (e.getClickCount() == 2 && livroSelecionado != null) {
-                        // Abre a janela modal
-                        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(PainelEsquerdo.this);
-                        TelaModalLivro modal = new TelaModalLivro(parent, livroSelecionado);
-                        modal.setVisible(true);
-                        
-                        // Se salvou alguma alteração, atualiza a tabela
-                        if (modal.salvou()) {
-                            atualizarTabela();
-                            tela.getPainelSuperior().atualizarContador(
-                                lista.getIndiceAtual(), 
-                                tabelaLivros.getRowCount()
-                            );
-                        }
-                    } else {
-                        // Se for clique único, apenas atualiza o contador
-                        tela.getPainelSuperior().atualizarContador(linhaSelecionada, tabelaLivros.getRowCount());
-                    }
-                }
+                int coluna = tabelaLivros.columnAtPoint(e.getPoint());
+                lista.ordenarPorColuna(coluna);
+                atualizarTabela();
             }
         });
     } // <--- ESTA CHAVE FECHA O CONSTRUTOR! (É ISSO QUE FALTAVA)
