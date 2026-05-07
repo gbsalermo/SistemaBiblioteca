@@ -21,21 +21,29 @@ public class PainelDireito extends JPanel {
     private TelaPrincipal tela;
     private ListaLivrosDuplamenteEncadeada lista;
 
+    private Runnable aoSalvar;
+
     public PainelDireito(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista) {
         this.tela = tela;
         this.lista = lista;
         
         // Layout de Grade: 12 linhas, 1 coluna (para labels, campos e botões)
-        this.setLayout(new GridLayout(15, 1, 5, 5));
+        this.setLayout(new GridLayout(15, 1, 5, 10));
         this.setBorder(BorderFactory.createTitledBorder("Gerenciar Livro"));
 
         // Inicializando Componentes
         txtTitulo = new JTextField();
+        txtTitulo.setPreferredSize(new Dimension(200, 30));
         txtAutor = new JTextField();
+        txtAutor.setPreferredSize(new Dimension(200, 30));
         txtAno = new JTextField();
+        txtAno.setPreferredSize(new Dimension(200, 30));
         txtGenero = new JTextField();
+        txtGenero.setPreferredSize(new Dimension(200, 30));
         txtEditora = new JTextField();
+        txtEditora.setPreferredSize(new Dimension(200, 30));
         txtPosicao = new JTextField("(opcional)");
+        txtPosicao.setPreferredSize(new Dimension(200, 30));
         txtPosicao.setForeground(Color.GRAY);
 
         // Adicionando ao Painel
@@ -78,6 +86,7 @@ public class PainelDireito extends JPanel {
                 
                 limparCampos();
                 tela.atualizarInterface();
+                if (aoSalvar != null) aoSalvar.run();
                 JOptionPane.showMessageDialog(this, "Livro salvo com sucesso!");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Erro: O campo Ano deve ser um número.");
@@ -98,6 +107,7 @@ public class PainelDireito extends JPanel {
                 
                 limparCampos();
                 tela.atualizarInterface();
+                if (aoSalvar != null) aoSalvar.run();
                 JOptionPane.showMessageDialog(this, "Livro salvo com sucesso!");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Erro: O campo Ano deve ser um número.");
@@ -137,6 +147,7 @@ public class PainelDireito extends JPanel {
                 
                 limparCampos();
                 tela.atualizarInterface();
+                if (aoSalvar != null) aoSalvar.run();
                 JOptionPane.showMessageDialog(this, "Livro salvo com sucesso!");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erro inesperado: " + ex.getMessage());
@@ -180,5 +191,8 @@ public class PainelDireito extends JPanel {
         txtAno.setText("");
         txtGenero.setText("");
         txtEditora.setText("");
+    }
+    public void setAoSalvar(Runnable aoSalvar) {
+        this.aoSalvar = aoSalvar;
     }
 }

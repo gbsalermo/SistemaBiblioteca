@@ -58,7 +58,7 @@ public class TelaPrincipal {
         painelDireito = new PainelDireito(this, lista);
         // Adiciona cada painel em uma posição.
         painelPrincipal.add(painelSuperior, BorderLayout.NORTH);
-        painelPrincipal.add(painelDireito, BorderLayout.WEST);
+        //painelPrincipal.add(painelDireito, BorderLayout.WEST);
         // Center é melhor para tabelas.
         painelPrincipal.add(painelEsquerdo, BorderLayout.CENTER);
         // Adicionando o painel principal na janela.
@@ -79,7 +79,7 @@ public class TelaPrincipal {
         painelEsquerdo.atualizarTabela();
 
         // 2. Atualiza os campos de texto no painel direito
-        painelDireito.exibirLivro(lista.getAtual());
+        //painelDireito.exibirLivro(lista.getAtual());
 
         // 3. Atualiza o contador lá em cima
         painelSuperior.atualizarContador(lista.getIndiceAtual(), lista.getTotalLivros());

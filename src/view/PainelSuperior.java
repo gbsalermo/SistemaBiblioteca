@@ -9,6 +9,10 @@ import model.Livro;
 import repository.ListaLivrosDuplamenteEncadeada;
 import model.Livro;
 
+import javax.swing.SwingUtilities;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+
 /**
  * Classe responsavel pelo painel dos botoes e controles da parte superior.
  */
@@ -17,7 +21,7 @@ public class PainelSuperior extends JPanel {
 
     // Atributos dos botoes - Inserir, remover, Buscar, Anterior, Proximo, Listar:
 
-    private JButton btRemover, btBuscar, btAnterior, btProximo, btOrdenar, btListar;
+    private JButton btRemover, btBuscar, btAnterior, btProximo, btAdicionar, btListar;
     // Para mostrar a posição atual.
     private JLabel lblContador;
 
@@ -45,7 +49,7 @@ public class PainelSuperior extends JPanel {
         btAnterior = new JButton("ANTERIOR");
         btProximo = new JButton("PROXIMO");
         lblContador = new JLabel(" | Livros: 0/0");
-        btOrdenar = new JButton("ORDENAR");
+        btAdicionar = new JButton("ADICIONAR");
         btListar = new JButton("LISTAR");
 
         this.add(btBuscar);
@@ -55,7 +59,7 @@ public class PainelSuperior extends JPanel {
         this.add(btProximo);
         this.add(lblContador);
         this.add(new JLabel(" | "));
-        this.add(btOrdenar);
+        this.add(btAdicionar);
         this.add(btListar);
 
         configurarEventos();
@@ -124,47 +128,35 @@ btAnterior.addActionListener(e -> {
         tela.atualizarInterface();
     }
 });
-
-        btRemover.addActionListener(e -> {
-            if (!lista.estaVazia()) {
-                lista.removerAtual();
-                if (flag_tela == 1) {
-                    painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
-                    int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
-                    atualizarContador(lista.getIndiceAtual(), filtrados);
-                } else {
-                    tela.atualizarInterface();
-                }
-            }
-        });
-
-        // btOrdenar.addActionListener(e -> {
-        //     if (!lista.estaVazia()) {
-        //         lista.ordenar();
-        //         if (flag_tela == 1) {
-        //             painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
-        //             int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
-        //             atualizarContador(lista.getIndiceAtual(), filtrados);
-        //         } else {
-        //             tela.atualizarInterface();
-        //         }
-        //     }
-        // });
-
-        btBuscar.addActionListener(e -> {
-            JanelaBusca();
-        });
-
-        btListar.addActionListener(e -> {
-            if (!lista.estaVazia()) {
-                lista.listarTodos();
-                flag_tela = 0;
-                termoAtual = "";
-                tela.atualizarInterface();
-            }
-
-        });
+btRemover.addActionListener(e -> {
+    if (!lista.estaVazia()) {
+        lista.removerAtual();
+        if (flag_tela == 1) {
+            painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
+            int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
+            // Pega a linha selecionada na tabela filtrada após remoção
+            int linhaSelecionada = tabelaLivros.getSelectedRow();
+            atualizarContador(linhaSelecionada == -1 ? 0 : linhaSelecionada, filtrados);
+        } else {
+            tela.atualizarInterface();
+        }
     }
+});
+btAdicionar.addActionListener(e -> abrirDialogAdicionar());
+
+btBuscar.addActionListener(e -> {
+    JanelaBusca();
+});
+
+btListar.addActionListener(e -> {
+    if (!lista.estaVazia()) {
+        lista.listarTodos();
+        flag_tela = 0;
+        termoAtual = "";
+        tela.atualizarInterface();
+    }
+});
+}
 
     public void atualizarContador(int atual, int total) {
         if (total == 0) {
@@ -287,4 +279,18 @@ btAnterior.addActionListener(e -> {
             }
         }
     }
+    private void abrirDialogAdicionar() {
+        // Pega a janela pai
+        JFrame janelaPai = (JFrame) SwingUtilities.getWindowAncestor(this);
+        JDialog dialog = new JDialog(janelaPai, "Adicionar Livro", true);
+        dialog.setSize(600, 600);
+        dialog.setLocationRelativeTo(janelaPai);
+
+        PainelDireito painelForm = new PainelDireito(tela, lista);
+        painelForm.setAoSalvar(() -> dialog.dispose());
+        dialog.add(painelForm);
+        dialog.setVisible(true);
+
+        tela.atualizarInterface();
+        };
 }

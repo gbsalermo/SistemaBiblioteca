@@ -58,7 +58,29 @@ public class PainelEsquerdo extends JPanel {
                 atualizarTabela();
             }
         });
-    } // <--- ESTA CHAVE FECHA O CONSTRUTOR! (É ISSO QUE FALTAVA)
+        tabelaLivros.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+            int linhaSelecionada = tabelaLivros.getSelectedRow();
+
+            if (linhaSelecionada != -1) {
+                String titulo = (String) modeloTabela.getValueAt(linhaSelecionada, 1);
+                Livro livroSelecionado = lista.buscarPorTitulo(titulo);
+
+                if (livroSelecionado != null) {
+                    JFrame janelaPai = (JFrame) SwingUtilities.getWindowAncestor(PainelEsquerdo.this);
+                    TelaModalLivro modal = new TelaModalLivro(janelaPai, livroSelecionado);
+                    modal.setVisible(true);
+
+                    // Se salvou, atualiza a tabela
+                    if (modal.salvou()) {
+                        atualizarTabela();
+                    }
+                }
+            }
+        }
+    });
+} // <--- ESTA CHAVE FECHA O CONSTRUTOR! (É ISSO QUE FALTAVA)
 
     /**
     * Limpa a tabela e insere todos os livros vindos da lista encadeada.
