@@ -293,4 +293,15 @@ btListar.addActionListener(e -> {
 
         tela.atualizarInterface();
         };
+    public boolean isModoBusca() {
+    return flag_tela == 1;
+    }
+
+    public String getTermoAtual() {
+    return termoAtual;
+    }
+
+    public int getTipoAtual() {
+    return tipoAtual;
+    }
 }

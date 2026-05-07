@@ -26,8 +26,10 @@ public class PainelEsquerdo extends JPanel {
     // O "motor" da tabela.
     private DefaultTableModel modeloTabela;
     private ListaLivrosDuplamenteEncadeada lista;
-
+    private TelaPrincipal tela;
+    
     public PainelEsquerdo(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista) {
+        this.tela = tela;
         this.lista = lista;
         // BorderLayout coloca componentes em regiões (NORTH, SOUTH, EAST, WEST, CENTER).
         this.setLayout(new BorderLayout());
@@ -55,7 +57,16 @@ public class PainelEsquerdo extends JPanel {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 int coluna = tabelaLivros.columnAtPoint(e.getPoint());
                 lista.ordenarPorColuna(coluna);
-                atualizarTabela();
+
+                // Verifica em qual modo está
+                if (tela.getPainelSuperior().isModoBusca()) {
+                    filtrarTabela(
+                        tela.getPainelSuperior().getTermoAtual(),
+                        tela.getPainelSuperior().getTipoAtual()
+                    );
+                } else {
+                    atualizarTabela();
+                }
             }
         });
         tabelaLivros.addMouseListener(new java.awt.event.MouseAdapter() {
