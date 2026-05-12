@@ -80,7 +80,10 @@ public class PainelEsquerdo extends JPanel {
 
                 if (livroSelecionado != null) {
                     JFrame janelaPai = (JFrame) SwingUtilities.getWindowAncestor(PainelEsquerdo.this);
-                    TelaModalLivro modal = new TelaModalLivro(janelaPai, livroSelecionado);
+                     ListaLivrosDuplamenteEncadeada listaCompleta = PainelEsquerdo.this.lista;
+                     int indiceAtual = listaCompleta.getIndiceAtual();
+
+                    TelaModalLivro modal = new TelaModalLivro(janelaPai, livroSelecionado, listaCompleta, indiceAtual);
                     modal.setVisible(true);
 
                     // Se salvou, atualiza a tabela
@@ -91,7 +94,7 @@ public class PainelEsquerdo extends JPanel {
             }
         }
     });
-} // <--- ESTA CHAVE FECHA O CONSTRUTOR! (É ISSO QUE FALTAVA)
+} 
 
     /**
     * Limpa a tabela e insere todos os livros vindos da lista encadeada.
@@ -161,4 +164,26 @@ public class PainelEsquerdo extends JPanel {
     public int getQuantidadeLinhasTabela() {
         return modeloTabela.getRowCount();
     }
+public void preencherTabelaComTodos() {
+    DefaultTableModel modelo = (DefaultTableModel) tabelaLivros.getModel();
+    modelo.setRowCount(0);
+    
+    No aux = lista.getPrimeiro();
+    while (aux != null) {
+        Livro livro = aux.getLivro();
+        modelo.addRow(new Object[]{
+            livro.getId(),
+            livro.getTitulo(),
+            livro.getAutor(),
+            livro.getAnoPublicacao()
+        });
+        aux = aux.getProximo();
+    }
+}
+    public void selecionarLinhaTabela(int indice) {
+    if (indice >= 0 && tabelaLivros.getRowCount() > indice) {
+        tabelaLivros.setRowSelectionInterval(indice, indice);
+        tabelaLivros.scrollRectToVisible(tabelaLivros.getCellRect(indice, 0, true));
+    }
+}
 }
