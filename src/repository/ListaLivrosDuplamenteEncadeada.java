@@ -511,21 +511,31 @@ public class ListaLivrosDuplamenteEncadeada {
         return listaTemporaria;
     }
 
-    //Metodo para buscar por autor em formato de lista, para caso o autor tenha mais de um livro
-    public List<Livro> buscarTodosPorAutor(String autor) {
-    List<Livro> resultados = new ArrayList<>();
-    No aux = primeiro;
-    boolean primeiroEncontrado = true;
-    while (aux != null) {
-        if (aux.getLivro().getAutor().toLowerCase().contains(autor.toLowerCase())) {
-            resultados.add(aux.getLivro());
-            if (primeiroEncontrado) {
-                this.atual = aux;
-                primeiroEncontrado = false;
+   // Método para buscar por autor retornando uma nova Lista encadeada com os resultados
+    public ListaLivrosDuplamenteEncadeada buscarTodosPorAutor(String autor) {
+        // Criamos uma nova lista para armazenar os resultados encontrados
+        ListaLivrosDuplamenteEncadeada resultados = new ListaLivrosDuplamenteEncadeada();
+        
+        No aux = primeiro;
+        boolean primeiroEncontrado = true;
+
+        while (aux != null) {
+            // Verifica se o nome do autor contém o trecho pesquisado (ignora maiúsculas/minúsculas)
+            if (aux.getLivro().getAutor().toLowerCase().contains(autor.toLowerCase())) {
+                
+                // Em vez de ArrayList.add, usamos o método de inserir da sua própria lista
+                // Supondo que seu método de inserir se chame 'adicionarNoFinal' ou 'inserir'
+                resultados.adicionarNoFim(aux.getLivro());
+
+                // Se for o primeiro resultado da busca, posiciona o ponteiro 'atual' da lista principal nele
+                if (primeiroEncontrado) {
+                    this.atual = aux;
+                    primeiroEncontrado = false;
+                }
             }
+            aux = aux.getProximo();
         }
-        aux = aux.getProximo();
+        
+        return resultados; // Retorna a lista própria com os livros filtrados
     }
-    return resultados;
-}
 }

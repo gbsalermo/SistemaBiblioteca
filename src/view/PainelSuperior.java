@@ -9,10 +9,6 @@ import model.Livro;
 import repository.ListaLivrosDuplamenteEncadeada;
 import model.Livro;
 
-import javax.swing.SwingUtilities;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-
 /**
  * Classe responsavel pelo painel dos botoes e controles da parte superior.
  */
@@ -68,95 +64,95 @@ public class PainelSuperior extends JPanel {
     private void configurarEventos() {
         // Agora os botões do topo também controlam a lista!
         // Evento do botão PRÓXIMO
-    btProximo.addActionListener(e -> {
-    // Verifica se está em modo busca
-    if (flag_tela == 1) {
-        // Em modo busca, navega na tabela filtrada
-        int linhaAtual = tabelaLivros.getSelectedRow(); // Pega a linha selecionada
-        
-        // Verifica se não está na última linha
-        if (linhaAtual < tabelaLivros.getRowCount() - 1) {
-            // Seleciona a próxima linha
-            tabelaLivros.setRowSelectionInterval(linhaAtual + 1, linhaAtual + 1);
-            
-            // Pega o título do livro da próxima linha
-            String titulo = (String) tabelaLivros.getModel().getValueAt(linhaAtual + 1, 1);
-            
-            // Busca o livro pelo título
-            Livro livro = lista.buscarPorTitulo(titulo);
-            
-            // Exibe o livro no painel direito
-            tela.getPainelDireito().exibirLivro(livro);
-            
-            // Atualiza o contador
-            atualizarContador(linhaAtual + 1, tabelaLivros.getRowCount());
-        }
-    } else {
-        // Em modo normal, avança na lista original
-        lista.avancar();
-        tela.atualizarInterface();
-    }
-});
+        btProximo.addActionListener(e -> {
+            // Verifica se está em modo busca
+            if (flag_tela == 1) {
+                // Em modo busca, navega na tabela filtrada
+                int linhaAtual = tabelaLivros.getSelectedRow(); // Pega a linha selecionada
 
-// Evento do botão ANTERIOR
-btAnterior.addActionListener(e -> {
-    // Verifica se está em modo busca
-    if (flag_tela == 1) {
-        // Em modo busca, navega na tabela filtrada
-        int linhaAtual = tabelaLivros.getSelectedRow(); // Pega a linha selecionada
-        
-        // Verifica se não está na primeira linha
-        if (linhaAtual > 0) {
-            // Seleciona a linha anterior
-            tabelaLivros.setRowSelectionInterval(linhaAtual - 1, linhaAtual - 1);
-            
-            // Pega o título do livro da linha anterior
-            String titulo = (String) tabelaLivros.getModel().getValueAt(linhaAtual - 1, 1);
-            
-            // Busca o livro pelo título
-            Livro livro = lista.buscarPorTitulo(titulo);
-            
-            // Exibe o livro no painel direito
-            tela.getPainelDireito().exibirLivro(livro);
-            
-            // Atualiza o contador
-            atualizarContador(linhaAtual - 1, tabelaLivros.getRowCount());
-        }
-    } else {
-        // Em modo normal, volta na lista original
-        lista.voltar();
-        tela.atualizarInterface();
-    }
-});
-btRemover.addActionListener(e -> {
-    if (!lista.estaVazia()) {
-        lista.removerAtual();
-        if (flag_tela == 1) {
-            painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
-            int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
-            // Pega a linha selecionada na tabela filtrada após remoção
-            int linhaSelecionada = tabelaLivros.getSelectedRow();
-            atualizarContador(linhaSelecionada == -1 ? 0 : linhaSelecionada, filtrados);
-        } else {
-            tela.atualizarInterface();
-        }
-    }
-});
-btAdicionar.addActionListener(e -> abrirDialogAdicionar());
+                // Verifica se não está na última linha
+                if (linhaAtual < tabelaLivros.getRowCount() - 1) {
+                    // Seleciona a próxima linha
+                    tabelaLivros.setRowSelectionInterval(linhaAtual + 1, linhaAtual + 1);
 
-btBuscar.addActionListener(e -> {
-    JanelaBusca();
-});
+                    // Pega o título do livro da próxima linha
+                    String titulo = (String) tabelaLivros.getModel().getValueAt(linhaAtual + 1, 1);
 
-btListar.addActionListener(e -> {
-    if (!lista.estaVazia()) {
-        lista.listarTodos();
-        flag_tela = 0;
-        termoAtual = "";
-        tela.atualizarInterface();
+                    // Busca o livro pelo título
+                    Livro livro = lista.buscarPorTitulo(titulo);
+
+                    // Exibe o livro no painel direito
+                    tela.getPainelDireito().exibirLivro(livro);
+
+                    // Atualiza o contador
+                    atualizarContador(linhaAtual + 1, tabelaLivros.getRowCount());
+                }
+            } else {
+                // Em modo normal, avança na lista original
+                lista.avancar();
+                tela.atualizarInterface();
+            }
+        });
+
+        // Evento do botão ANTERIOR
+        btAnterior.addActionListener(e -> {
+            // Verifica se está em modo busca
+            if (flag_tela == 1) {
+                // Em modo busca, navega na tabela filtrada
+                int linhaAtual = tabelaLivros.getSelectedRow(); // Pega a linha selecionada
+
+                // Verifica se não está na primeira linha
+                if (linhaAtual > 0) {
+                    // Seleciona a linha anterior
+                    tabelaLivros.setRowSelectionInterval(linhaAtual - 1, linhaAtual - 1);
+
+                    // Pega o título do livro da linha anterior
+                    String titulo = (String) tabelaLivros.getModel().getValueAt(linhaAtual - 1, 1);
+
+                    // Busca o livro pelo título
+                    Livro livro = lista.buscarPorTitulo(titulo);
+
+                    // Exibe o livro no painel direito
+                    tela.getPainelDireito().exibirLivro(livro);
+
+                    // Atualiza o contador
+                    atualizarContador(linhaAtual - 1, tabelaLivros.getRowCount());
+                }
+            } else {
+                // Em modo normal, volta na lista original
+                lista.voltar();
+                tela.atualizarInterface();
+            }
+        });
+        btRemover.addActionListener(e -> {
+            if (!lista.estaVazia()) {
+                lista.removerAtual();
+                if (flag_tela == 1) {
+                    painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
+                    int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
+                    // Pega a linha selecionada na tabela filtrada após remoção
+                    int linhaSelecionada = tabelaLivros.getSelectedRow();
+                    atualizarContador(linhaSelecionada == -1 ? 0 : linhaSelecionada, filtrados);
+                } else {
+                    tela.atualizarInterface();
+                }
+            }
+        });
+        btAdicionar.addActionListener(e -> abrirDialogAdicionar());
+
+        btBuscar.addActionListener(e -> {
+            JanelaBusca();
+        });
+
+        btListar.addActionListener(e -> {
+            if (!lista.estaVazia()) {
+                lista.listarTodos();
+                flag_tela = 0;
+                termoAtual = "";
+                tela.atualizarInterface();
+            }
+        });
     }
-});
-}
 
     public void atualizarContador(int atual, int total) {
         if (total == 0) {
@@ -240,10 +236,12 @@ btListar.addActionListener(e -> {
             }
             // Se escolheu buscar por AUTOR
             else {
-                List<Livro> livrosEncontrados = lista.buscarTodosPorAutor(termoBusca); // Busco todos os livros do autor
+                // Agora o retorno é a sua própria classe, não mais uma List do Java
+                ListaLivrosDuplamenteEncadeada livrosEncontrados = lista.buscarTodosPorAutor(termoBusca);
 
-                // Se não encontrou nada
-                if (livrosEncontrados == null || livrosEncontrados.size() == 0) {
+                // Verificamos se a lista de resultados está vazia usando o seu atributo
+                // totalLivros
+                if (livrosEncontrados == null || livrosEncontrados.getTotalLivros() == 0) {
                     JOptionPane.showMessageDialog(
                             this,
                             "Autor não encontrado!",
@@ -255,7 +253,7 @@ btListar.addActionListener(e -> {
                 // Se encontrou livros (um ou mais), exibe todos na tabela
                 JOptionPane.showMessageDialog(
                         this,
-                        "✅ " + livrosEncontrados.size() + " livro(s) encontrado(s) de: " + termoBusca,
+                        "✅ " + livrosEncontrados.getTotalLivros() + " livro(s) encontrado(s) de: " + termoBusca,
                         "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
 
@@ -271,7 +269,10 @@ btListar.addActionListener(e -> {
                 tela.getPainelEsquerdo().filtrarTabela(termoBusca, 1);
 
                 // Atualiza o painel direito com o primeiro livro
-                tela.getPainelDireito().exibirLivro(livrosEncontrados.get(0));
+                Livro primeiroLivro = livrosEncontrados.getPrimeiro() != null
+                        ? livrosEncontrados.getPrimeiro().getLivro()
+                        : null;
+                tela.getPainelDireito().exibirLivro(primeiroLivro);
 
                 // Atualiza o contador
                 int filtrados = tela.getPainelEsquerdo().getQuantidadeLinhasTabela();
@@ -279,6 +280,7 @@ btListar.addActionListener(e -> {
             }
         }
     }
+
     private void abrirDialogAdicionar() {
         // Pega a janela pai
         JFrame janelaPai = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -292,16 +294,17 @@ btListar.addActionListener(e -> {
         dialog.setVisible(true);
 
         tela.atualizarInterface();
-        };
+    }
+
     public boolean isModoBusca() {
-    return flag_tela == 1;
+        return flag_tela == 1;
     }
 
     public String getTermoAtual() {
-    return termoAtual;
+        return termoAtual;
     }
 
     public int getTipoAtual() {
-    return tipoAtual;
+        return tipoAtual;
     }
 }
