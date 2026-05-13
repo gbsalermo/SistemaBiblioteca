@@ -48,9 +48,28 @@ public class ListaLivrosDuplamenteEncadeada {
         return totalLivros;
     }
 
+    public void setUltimo(No ultimo) {
+    this.ultimo = ultimo;
+    }
+
+    public void setTotalLivros(int totalLivros) {
+    this.totalLivros = totalLivros;
+    }
+
+    public void setPrimeiro(No primeiro) {
+    this.primeiro = primeiro;
+    }
+
+    public void setAtual(No atual) {
+    this.atual = atual;
+    }
+
     public No getPrimeiro() {
     return primeiro;
 }
+    public No getUltimo() {
+    return ultimo;
+    }
 
     /**
     * Retorna o índice (posição base zero) do nó 'atual' na lista.
@@ -413,44 +432,6 @@ public class ListaLivrosDuplamenteEncadeada {
             this.atual = novoNo;
         }
     }
-
-    // Remover atual:
-
-    /**
-    * Remove o livro que está atualmente selecionado pelo marcador 'atual'.
-    */
-
-    public void removerAtual() {
-        if (atual == null) return;
-
-        // Se for o único nó da lista
-        if (atual == primeiro && atual == ultimo) {
-            primeiro = ultimo = atual = null;
-        } 
-        // Se for o primeiro
-        else if (atual == primeiro) {
-            primeiro = primeiro.getProximo();
-            primeiro.setAnterior(null);
-            atual = primeiro;
-        } 
-        // Se for o último
-        else if (atual == ultimo) {
-            ultimo = ultimo.getAnterior();
-            ultimo.setProximo(null);
-            atual = ultimo;
-        } 
-        // Se estiver no meio
-        else {
-            No ant = atual.getAnterior();
-            No prox = atual.getProximo();
-            ant.setProximo(prox);
-            prox.setAnterior(ant);
-            // Move o marcador para o próximo após remover
-            atual = prox;
-        }
-        totalLivros--;
-    }
-
     // Listar:
 
     /**
