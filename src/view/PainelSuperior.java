@@ -8,6 +8,7 @@ import javax.swing.*;
 import model.Livro;
 import repository.ListaLivrosDuplamenteEncadeada;
 import model.Livro;
+import services.Remover;
 
 /**
  * Classe responsavel pelo painel dos botoes e controles da parte superior.
@@ -138,15 +139,28 @@ public class PainelSuperior extends JPanel {
         });
         btRemover.addActionListener(e -> {
             if (!lista.estaVazia()) {
-                lista.removerAtual();
-                if (flag_tela == 1) {
-                    painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
-                    int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
-                    // Pega a linha selecionada na tabela filtrada após remoção
-                    int linhaSelecionada = tabelaLivros.getSelectedRow();
-                    atualizarContador(linhaSelecionada == -1 ? 0 : linhaSelecionada, filtrados);
-                } else {
-                    tela.atualizarInterface();
+                // Cria uma instância do serviço Remover
+                Remover remover = new Remover();
+                
+                // Pega o índice do livro atual
+                int indiceAtual = lista.getIndiceAtual();
+                
+                if (indiceAtual != -1) {
+                    // Remove o livro na posição atual
+                    String resultado = remover.excluirPos(lista, indiceAtual);
+                    
+                    // Mostra mensagem de confirmação
+                    JOptionPane.showMessageDialog(this, resultado);
+                    
+                    if (flag_tela == 1) {
+                        painelEsquerdo.filtrarTabela(termoAtual, tipoAtual);
+                        int filtrados = painelEsquerdo.getQuantidadeLinhasTabela();
+                        // Pega a linha selecionada na tabela filtrada após remoção
+                        int linhaSelecionada = tabelaLivros.getSelectedRow();
+                        atualizarContador(linhaSelecionada == -1 ? 0 : linhaSelecionada, filtrados);
+                    } else {
+                        tela.atualizarInterface();
+                    }
                 }
             }
         });

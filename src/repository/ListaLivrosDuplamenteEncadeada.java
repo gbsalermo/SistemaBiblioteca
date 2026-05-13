@@ -49,9 +49,28 @@ public class ListaLivrosDuplamenteEncadeada {
         return totalLivros;
     }
 
+    public void setUltimo(No ultimo) {
+    this.ultimo = ultimo;
+    }
+
+    public void setTotalLivros(int totalLivros) {
+    this.totalLivros = totalLivros;
+    }
+
+    public void setPrimeiro(No primeiro) {
+    this.primeiro = primeiro;
+    }
+
+    public void setAtual(No atual) {
+    this.atual = atual;
+    }
+
     public No getPrimeiro() {
     return primeiro;
 }
+    public No getUltimo() {
+    return ultimo;
+    }
 
     /**
     * Retorna o índice (posição base zero) do nó 'atual' na lista.

@@ -1,54 +1,66 @@
 package services;
 
-//imports necessarios
 import repository.ListaLivrosDuplamenteEncadeada;
 import model.No;
 import view.TelaPrincipal;
 
 public class Remover {
-    //declaracao de objetos necessarios
+    
     public String excluirPos(ListaLivrosDuplamenteEncadeada lista, int posicao) {
-    String msg = "";
-    //chamando metodo para percorrer a lista
-    No noTemp = getNo(lista, posicao);
-    
-    //verificando se valor inserido eh valido, caso sim, o no eh removido
-    if (noTemp == null) {
-        msg = "Posicao não existe";
-    } else if (posicao == 0) {
-        if ((noTemp.getProximo()) == null) {
-            lista.setPrimeiro(null);
-            lista.setUltimo(null);
-            msg = "posicao excluida: " + posicao + ", valor: " + noTemp.getLivro().getTitulo();
-        } else {
-            lista.setPrimeiro(noTemp.getProximo());
-            lista.getPrimeiro().setAnterior(null);
-            msg = "posicao excluida: " + posicao + ", valor: " + noTemp.getLivro().getTitulo();
+        String msg = "";
+        No noTemp = getNo(lista, posicao);
+        
+        if (noTemp == null) {
+            msg = "Posicao invalida ou inexistente";
+            return msg;
         }
-    } else if (posicao == lista.getTotalLivros() - 1) {
-        lista.setUltimo(noTemp.getAnterior());
-        lista.getUltimo().setProximo(null);
-        msg = "posicao excluida: " + posicao + ", valor: " + noTemp.getLivro().getTitulo();
-    } else {
-        noTemp.getAnterior().setProximo(noTemp.getProximo());
-        (noTemp.getProximo()).setAnterior(noTemp.getAnterior());
-        msg = "posicao excluida: " + posicao + ", valor: " + noTemp.getLivro().getTitulo();
+        
+        //remover o primeiro no
+        if (posicao == 0) {
+            if (noTemp.getProximo() == null) {
+                // Lista ficará vazia
+                lista.setPrimeiro(null);
+                lista.setUltimo(null);
+                lista.setAtual(null);  //ATUALIZA O ATUAL
+                msg = "livro removido: " + (posicao+1) + ", titulo: " + noTemp.getLivro().getTitulo();
+            } else {
+                // Remove o primeiro e o segundo vira o novo primeiro
+                lista.setPrimeiro(noTemp.getProximo());
+                lista.getPrimeiro().setAnterior(null);
+                lista.setAtual(lista.getPrimeiro());  //ATUAL APONTA PARA O NOVO PRIMEIRO
+                msg = "livro removido: " + (posicao+1) + ", titulo: " + noTemp.getLivro().getTitulo();
+            }
+        } 
+        //remover o último no
+        else if (posicao == lista.getTotalLivros() - 1) {
+            lista.setUltimo(noTemp.getAnterior());
+            lista.getUltimo().setProximo(null);
+            lista.setAtual(lista.getUltimo());  //ATUAL APONTA PARA O NOVO ÚLTIMO
+            msg = "livro removido: " + (posicao+1) + ", titulo: " + noTemp.getLivro().getTitulo();
+        } 
+        //remover do meio
+        else {
+            noTemp.getAnterior().setProximo(noTemp.getProximo());
+            noTemp.getProximo().setAnterior(noTemp.getAnterior());
+            lista.setAtual(noTemp.getProximo());  //ATUAL APONTA PARA O PRÓXIMO
+            msg = "livro removido: " + (posicao+1) + ", titulo: " + noTemp.getLivro().getTitulo();
+        }
+        
+        //Reduzindo totalLivros da lista
+        lista.setTotalLivros(lista.getTotalLivros() - 1);
+        return msg;
     }
-    //reduzindo totalLivros da lista
-    lista.setTotalLivros(lista.getTotalLivros() - 1);
-    return msg;
-}
 
-// percorrendo a lista
-private No getNo(ListaLivrosDuplamenteEncadeada lista, int posicao) {
-    if (posicao < 0 || posicao >= lista.getTotalLivros()) {
-        return null;
+    //percorrendo a lista
+    private No getNo(ListaLivrosDuplamenteEncadeada lista, int posicao) {
+        if (posicao < 0 || posicao >= lista.getTotalLivros()) {
+            return null;
+        }
+        
+        No atual = lista.getPrimeiro();
+        for (int i = 0; i < posicao; i++) {
+            atual = atual.getProximo();
+        }
+        return atual;
     }
-    
-    No atual = lista.getPrimeiro();
-    for (int i = 0; i < posicao; i++) {
-        atual = atual.getProximo();
-    }
-    return atual;
-}
 }
