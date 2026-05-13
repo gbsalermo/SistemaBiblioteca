@@ -89,9 +89,15 @@ public class PainelSuperior extends JPanel {
                     atualizarContador(linhaAtual + 1, tabelaLivros.getRowCount());
                 }
             } else {
-                // Em modo normal, avança na lista original
                 lista.avancar();
+                int indiceAtual = lista.getIndiceAtual();
+
                 tela.atualizarInterface();
+
+                painelEsquerdo.selecionarLinhaTabela(indiceAtual);
+
+                atualizarContador(indiceAtual, lista.getTotalLivros());
+
             }
         });
 
@@ -122,7 +128,13 @@ public class PainelSuperior extends JPanel {
             } else {
                 // Em modo normal, volta na lista original
                 lista.voltar();
+                int indiceAtual = lista.getIndiceAtual();
+
                 tela.atualizarInterface();
+
+                painelEsquerdo.selecionarLinhaTabela(indiceAtual);
+
+                atualizarContador(indiceAtual, lista.getTotalLivros());
             }
         });
         btRemover.addActionListener(e -> {
@@ -163,6 +175,8 @@ public class PainelSuperior extends JPanel {
                 lista.listarTodos();
                 flag_tela = 0;
                 termoAtual = "";
+                painelEsquerdo.preencherTabelaComTodos(); 
+                painelEsquerdo.selecionarLinhaTabela(0);  
                 tela.atualizarInterface();
             }
         });

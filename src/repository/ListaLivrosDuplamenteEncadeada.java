@@ -2,6 +2,7 @@ package repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import util.CsvExporter;
 
 // Importação das classes necessárias localizadas no pacote model.
 // O 'Livro' representa os dados e o 'No' representa o elo da corrente.
@@ -364,6 +365,7 @@ public class ListaLivrosDuplamenteEncadeada {
             ultimo = novoNo;
         }
         totalLivros++;
+        CsvExporter.exportar(this);
     }
 
     // Inserir no início:
@@ -383,6 +385,7 @@ public class ListaLivrosDuplamenteEncadeada {
             primeiro = novoNo;
         }
         totalLivros++;
+        CsvExporter.exportar(this);
     }
 
     // Inserir na posição:
@@ -431,7 +434,47 @@ public class ListaLivrosDuplamenteEncadeada {
             // Opcional: move o marcador atual para a nova inserção
             this.atual = novoNo;
         }
+        CsvExporter.exportar(this);
     }
+
+    // Remover atual:
+
+    /**
+    * Remove o livro que está atualmente selecionado pelo marcador 'atual'.
+    */
+
+    public void removerAtual() {
+        if (atual == null) return;
+
+        // Se for o único nó da lista
+        if (atual == primeiro && atual == ultimo) {
+            primeiro = ultimo = atual = null;
+        } 
+        // Se for o primeiro
+        else if (atual == primeiro) {
+            primeiro = primeiro.getProximo();
+            primeiro.setAnterior(null);
+            atual = primeiro;
+        } 
+        // Se for o último
+        else if (atual == ultimo) {
+            ultimo = ultimo.getAnterior();
+            ultimo.setProximo(null);
+            atual = ultimo;
+        } 
+        // Se estiver no meio
+        else {
+            No ant = atual.getAnterior();
+            No prox = atual.getProximo();
+            ant.setProximo(prox);
+            prox.setAnterior(ant);
+            // Move o marcador para o próximo após remover
+            atual = prox;
+        }
+        totalLivros--;
+        CsvExporter.exportar(this);
+    }
+
     // Listar:
 
     /**
