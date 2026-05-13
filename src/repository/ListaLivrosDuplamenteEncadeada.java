@@ -2,6 +2,7 @@ package repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import util.CsvExporter;
 
 // Importação das classes necessárias localizadas no pacote model.
 // O 'Livro' representa os dados e o 'No' representa o elo da corrente.
@@ -345,6 +346,7 @@ public class ListaLivrosDuplamenteEncadeada {
             ultimo = novoNo;
         }
         totalLivros++;
+        CsvExporter.exportar(this);
     }
 
     // Inserir no início:
@@ -364,6 +366,7 @@ public class ListaLivrosDuplamenteEncadeada {
             primeiro = novoNo;
         }
         totalLivros++;
+        CsvExporter.exportar(this);
     }
 
     // Inserir na posição:
@@ -412,6 +415,7 @@ public class ListaLivrosDuplamenteEncadeada {
             // Opcional: move o marcador atual para a nova inserção
             this.atual = novoNo;
         }
+        CsvExporter.exportar(this);
     }
 
     // Remover atual:
@@ -449,6 +453,7 @@ public class ListaLivrosDuplamenteEncadeada {
             atual = prox;
         }
         totalLivros--;
+        CsvExporter.exportar(this);
     }
 
     // Listar:
