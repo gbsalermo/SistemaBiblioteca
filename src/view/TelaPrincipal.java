@@ -1,91 +1,221 @@
 package view;
 
-//Testando como vai ser a tela principal ainda, com comandos basicos de swing.
-//Até aqui é apenas uma janela vazia.
+// Testando como vai ser a tela principal ainda, com comandos básicos de Swing.
+// Até aqui é apenas uma janela vazia.
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+
 import repository.ListaLivrosDuplamenteEncadeada;
 import model.Livro;
 
 public class TelaPrincipal {
 
-    // Atributos:
+    // =========================
+    // ATRIBUTOS PRINCIPAIS
+    // =========================
 
-    private ListaLivrosDuplamenteEncadeada lista; // teste
+    // Lista principal da aplicação
+    private ListaLivrosDuplamenteEncadeada lista;
+
+    // Janela principal do sistema
     private JFrame janela;
+
+    // Painéis da interface
     private PainelSuperior painelSuperior;
-    private PainelEsquerdo painelEsquerdo;
+    private PainelLista painelEsquerdo;
     private PainelDireito painelDireito;
 
-    // 1. A instância única da sua lista.
-    // private ListaLivrosDuplamenteEncadeada lista = new
-    // ListaLivrosDuplamenteEncadeada();
-    // teste
+    /*
+     * A ideia aqui é manter apenas UMA instância da lista
+     * e compartilhar essa mesma lista entre todos os painéis.
+     * 
+     * Isso evita inconsistências de dados.
+     */
 
-    // Construtor principal da classe, recebendo a lista pronta e realizando a
-    // injeção de dependência
+    // =====================================================
+    // CONSTRUTOR PRINCIPAL
+    // =====================================================
+
+    /*
+     * Recebe a lista pronta por parâmetro.
+     * 
+     * Isso é chamado de Injeção de Dependência:
+     * a lista vem de fora ao invés de ser criada aqui dentro.
+     */
     public TelaPrincipal(ListaLivrosDuplamenteEncadeada lista) {
+
+        // Salva a referência da lista
         this.lista = lista;
-        // Chama o método responsável por montar a interface gráfica.
+
+        // Monta toda a interface gráfica
         inicializar();
     }
 
+    // =====================================================
+    // CONSTRUTOR PADRÃO
+    // =====================================================
+
+    /*
+     * Caso a tela seja criada sem passar nenhuma lista,
+     * cria automaticamente uma lista vazia.
+     */
     public TelaPrincipal() {
-        // Cria uma nova lista vazia e chama o construtor principal.
-        // Isso garante que a inicialização sempre siga o mesmo fluxo.
+
+        /*
+         * this(...) chama outro construtor da mesma classe.
+         * 
+         * Nesse caso:
+         * - Cria uma nova lista vazia
+         * - Reaproveita o construtor principal
+         */
         this(new ListaLivrosDuplamenteEncadeada());
     }
 
-    // Mu
+    // =====================================================
+    // MÉTODO RESPONSÁVEL POR MONTAR A INTERFACE
+    // =====================================================
 
     public void inicializar() {
 
-        // Criação da janela e o titulo.
+        // =========================
+        // CRIAÇÃO DA JANELA
+        // =========================
+
+        // Cria a janela principal
         janela = new JFrame("Sistema de Biblioteca");
-        // Tamanho da tela, largxalt em pixels.
+
+        // Define tamanho da janela (largura x altura)
         janela.setSize(1000, 700);
-        // Comportamento para fechar a janela e centralizar janela.
+
+        // Fecha completamente a aplicação ao clicar no X
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Centraliza a janela na tela
         janela.setLocationRelativeTo(null);
-        // Criando painel com BorderLayout
+
+        // =========================
+        // PAINEL PRINCIPAL
+        // =========================
+
+        /*
+         * BorderLayout divide a tela em:
+         * NORTH, SOUTH, EAST, WEST e CENTER
+         */
         JPanel painelPrincipal = new JPanel(new BorderLayout());
 
-        // 2. Passar a 'lista' e a própria 'TelaPrincipal' para os painéis.
-        // Isso permite que os botões dentro dos painéis chamem métodos daqui.
-        painelEsquerdo = new PainelEsquerdo(this, lista);
+        // =========================
+        // CRIAÇÃO DOS PAINÉIS
+        // =========================
+
+        /*
+         * Passamos:
+         * - a própria TelaPrincipal
+         * - a lista principal
+         * 
+         * Assim os painéis conseguem:
+         * - acessar os dados
+         * - atualizar a interface
+         * - chamar métodos da tela principal
+         */
+
+        painelEsquerdo = new PainelLista(this, lista);
+
         painelSuperior = new PainelSuperior(this, lista, painelEsquerdo);
+
         painelDireito = new PainelDireito(this, lista);
-        // Adiciona cada painel em uma posição.
+
+        // =========================
+        // ADIÇÃO DOS PAINÉIS
+        // =========================
+
+        // Painel dos botões superiores
         painelPrincipal.add(painelSuperior, BorderLayout.NORTH);
-        //painelPrincipal.add(painelDireito, BorderLayout.WEST);
-        // Center é melhor para tabelas.
+
+        /*
+         * O painel direito foi removido temporariamente.
+         * 
+         * Caso queira usar novamente:
+         * painelPrincipal.add(painelDireito, BorderLayout.WEST);
+         */
+
+        // Tabela principal fica no centro
         painelPrincipal.add(painelEsquerdo, BorderLayout.CENTER);
-        // Adicionando o painel principal na janela.
+
+        // =========================
+        // FINALIZAÇÃO DA JANELA
+        // =========================
+
+        // Adiciona o painel principal dentro da janela
         janela.add(painelPrincipal);
-        // Mostra a janela na tela
+
+        // Torna a janela visível
         janela.setVisible(true);
-        // Inicializa a tela
+
+        // Atualiza todos os componentes da interface
         atualizarInterface();
     }
 
+    // =====================================================
+    // MÉTODO CENTRAL DE ATUALIZAÇÃO DA INTERFACE
+    // =====================================================
+
     /**
-     * Método que orquestra a atualização de todos os componentes da tela.
-     * Sempre que algo mudar na lista (add, remover, buscar, navegar), chamamos este
-     * método.
+     * Sempre que algo mudar:
+     * - adicionar livro
+     * - remover
+     * - navegar
+     * - buscar
+     * 
+     * este método deve ser chamado.
      */
     public void atualizarInterface() {
-        // 1. Atualiza a tabela (O método correto é atualizarTabela)
+
+        // =========================
+        // ATUALIZA TABELA
+        // =========================
+
+        // Recarrega os dados da tabela
         painelEsquerdo.atualizarTabela();
 
-        // 2. Atualiza os campos de texto no painel direito
-        //painelDireito.exibirLivro(lista.getAtual());
+        // =========================
+        // ATUALIZA CAMPOS DA DIREITA
+        // =========================
 
-        // 3. Atualiza o contador lá em cima
-        painelSuperior.atualizarContador(lista.getIndiceAtual(), lista.getTotalLivros());
+        /*
+         * Exibe o livro atual no formulário.
+         * 
+         * Está comentado no momento porque o painel direito
+         * não está sendo exibido na tela.
+         */
+
+        // painelDireito.exibirLivro(lista.getAtual());
+
+        // =========================
+        // ATUALIZA CONTADOR
+        // =========================
+
+        /*
+         * Atualiza o texto:
+         * "Livro X / Total"
+         */
+        painelSuperior.atualizarContador(
+                lista.getIndiceAtual(),
+                lista.getTotalLivros()
+        );
     }
 
-    public PainelEsquerdo getPainelEsquerdo() {
+    // =====================================================
+    // GETTERS
+    // =====================================================
+
+    /*
+     * Esses métodos permitem que outros painéis
+     * acessem componentes da TelaPrincipal.
+     */
+
+    public PainelLista getPainelEsquerdo() {
         return painelEsquerdo;
     }
 
