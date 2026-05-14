@@ -27,20 +27,21 @@ public class PainelEsquerdo extends JPanel {
     private DefaultTableModel modeloTabela;
     private ListaLivrosDuplamenteEncadeada lista;
     private TelaPrincipal tela;
-    
+
     public PainelEsquerdo(TelaPrincipal tela, ListaLivrosDuplamenteEncadeada lista) {
         this.tela = tela;
         this.lista = lista;
-        // BorderLayout coloca componentes em regiões (NORTH, SOUTH, EAST, WEST, CENTER).
+        // BorderLayout coloca componentes em regiões (NORTH, SOUTH, EAST, WEST,
+        // CENTER).
         this.setLayout(new BorderLayout());
 
         // 1. Criamos o modelo da tabela definindo as colunas
         // Sobrescrevemos isCellEditable para que o usuário não edite direto na tabela.
-        String[] colunas = {"ID", "Título", "Autor", "Ano"};
+        String[] colunas = { "ID", "Título", "Autor", "Ano" };
         modeloTabela = new DefaultTableModel(colunas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; 
+                return false;
             }
         };
         // Cria a tabela com os dados iniciais (vazios) e as colunas.
@@ -61,73 +62,91 @@ public class PainelEsquerdo extends JPanel {
                 // Verifica em qual modo está
                 if (tela.getPainelSuperior().isModoBusca()) {
                     filtrarTabela(
-                        tela.getPainelSuperior().getTermoAtual(),
-                        tela.getPainelSuperior().getTipoAtual()
-                    );
+                            tela.getPainelSuperior().getTermoAtual(),
+                            tela.getPainelSuperior().getTipoAtual());
                 } else {
                     atualizarTabela();
                 }
             }
         });
         tabelaLivros.addMouseListener(new java.awt.event.MouseAdapter() {
-        @Override
-        public void mouseClicked(java.awt.event.MouseEvent e) {
-            int linhaSelecionada = tabelaLivros.getSelectedRow();
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int linhaSelecionada = tabelaLivros.getSelectedRow();
 
-            if (linhaSelecionada != -1) {
-                String titulo = (String) modeloTabela.getValueAt(linhaSelecionada, 1);
-                Livro livroSelecionado = lista.buscarPorTitulo(titulo);
+                if (linhaSelecionada != -1) {
+                    String titulo = (String) modeloTabela.getValueAt(linhaSelecionada, 1);
+                    Livro livroSelecionado = lista.buscarPorTitulo(titulo);
 
-                if (livroSelecionado != null) {
-                    JFrame janelaPai = (JFrame) SwingUtilities.getWindowAncestor(PainelEsquerdo.this);
-                     ListaLivrosDuplamenteEncadeada listaCompleta = PainelEsquerdo.this.lista;
-                     int indiceAtual = listaCompleta.getIndiceAtual();
+                    if (livroSelecionado != null) {
+                        JFrame janelaPai = (JFrame) SwingUtilities.getWindowAncestor(PainelEsquerdo.this);
 
-                    TelaModalLivro modal = new TelaModalLivro(janelaPai, livroSelecionado, listaCompleta, indiceAtual);
-                    modal.setVisible(true);
+                        // Verifica se esta no modo busca
+                        boolean isModoBusca = tela.getPainelSuperior().isModoBusca();
 
-                    // Se salvou, atualiza a tabela
-                    if (modal.salvou()) {
-                        atualizarTabela();
+                        ListaLivrosDuplamenteEncadeada listaParaModal;
+
+                        if (isModoBusca) {
+                            // Se Esta em modo Busca a lista é filtrada
+                            listaParaModal = criarListaFiltrada();
+                        } else {
+                            // Se está no modo normal, usa a lista completa
+                            listaParaModal = PainelEsquerdo.this.lista;
+                        }
+
+                        // Descobre qual linha da tabela foi clicada
+                        int indiceAtual = linhaSelecionada;
+
+                        // Move o ponteiro da lista filtrada até o livro correto
+                        listaParaModal.irParaIndice(indiceAtual);
+
+                        TelaModalLivro modal = new TelaModalLivro(janelaPai, livroSelecionado, listaParaModal,
+                                indiceAtual);
+                        modal.setVisible(true);
+
+                        // Se salvou, atualiza a tabela
+                        if (modal.salvou()) {
+                            atualizarTabela();
+                        }
                     }
                 }
             }
-        }
-    });
-} 
+        });
+    }
 
     /**
-    * Limpa a tabela e insere todos os livros vindos da lista encadeada.
-    */
+     * Limpa a tabela e insere todos os livros vindos da lista encadeada.
+     */
     public void atualizarTabela() {
-        //Zera a tabela removendo linhas existentes
+        // Zera a tabela removendo linhas existentes
         modeloTabela.setRowCount(0);
 
-        //Pega a lista encadeada do repositorio
+        // Pega a lista encadeada do repositorio
         ListaLivrosDuplamenteEncadeada listaEncadeada = lista.listarTodos();
-        
-        //Crio um array para armazenar esta lista
+
+        // Crio um array para armazenar esta lista
         List<Livro> listaConvertida = new ArrayList<>();
 
-        //Criação de ponteiro auxiliar que inicia no primeiro no da lista
+        // Criação de ponteiro auxiliar que inicia no primeiro no da lista
         No aux = listaEncadeada.getPrimeiro();
 
-        //Segue a lista até o final(null), pega o livro do nó atual e adiciona no array, depois avança para o prox. nó e verifica a condição
+        // Segue a lista até o final(null), pega o livro do nó atual e adiciona no
+        // array, depois avança para o prox. nó e verifica a condição
         while (aux != null) {
             listaConvertida.add(aux.getLivro());
             aux = aux.getProximo();
         }
 
-        //Aqui percorre o arrayList convertido e cria uma linha da tabela
+        // Aqui percorre o arrayList convertido e cria uma linha da tabela
         for (Livro l : listaConvertida) {
             Object[] linha = {
-                l.getId(),
-                l.getTitulo(),
-                l.getAutor(),
-                l.getAnoPublicacao()
+                    l.getId(),
+                    l.getTitulo(),
+                    l.getAutor(),
+                    l.getAnoPublicacao()
             };
 
-            //Adiciona essa linha na tabela no swing
+            // Adiciona essa linha na tabela no swing
             modeloTabela.addRow(linha);
         }
     }
@@ -141,49 +160,73 @@ public class PainelEsquerdo extends JPanel {
             Livro l = aux.getLivro();
 
             boolean corresponde = (tipo == 0)
-                ? l.getTitulo().toLowerCase().contains(termo.toLowerCase())
-                : l.getAutor().toLowerCase().contains(termo.toLowerCase());
+                    ? l.getTitulo().toLowerCase().contains(termo.toLowerCase())
+                    : l.getAutor().toLowerCase().contains(termo.toLowerCase());
 
             if (corresponde) {
-                modeloTabela.addRow(new Object[]{
-                    l.getId(),
-                    l.getTitulo(),
-                    l.getAutor(),
-                    l.getAnoPublicacao()
+                modeloTabela.addRow(new Object[] {
+                        l.getId(),
+                        l.getTitulo(),
+                        l.getAutor(),
+                        l.getAnoPublicacao()
                 });
             }
 
             aux = aux.getProximo();
         }
     }
-    
+
     public JTable getTabelaLivros() {
         return tabelaLivros;
     }
-    
+
     public int getQuantidadeLinhasTabela() {
         return modeloTabela.getRowCount();
     }
-public void preencherTabelaComTodos() {
-    DefaultTableModel modelo = (DefaultTableModel) tabelaLivros.getModel();
-    modelo.setRowCount(0);
-    
-    No aux = lista.getPrimeiro();
-    while (aux != null) {
-        Livro livro = aux.getLivro();
-        modelo.addRow(new Object[]{
-            livro.getId(),
-            livro.getTitulo(),
-            livro.getAutor(),
-            livro.getAnoPublicacao()
-        });
-        aux = aux.getProximo();
+
+    public void preencherTabelaComTodos() {
+        DefaultTableModel modelo = (DefaultTableModel) tabelaLivros.getModel();
+        modelo.setRowCount(0);
+
+        No aux = lista.getPrimeiro();
+        while (aux != null) {
+            Livro livro = aux.getLivro();
+            modelo.addRow(new Object[] {
+                    livro.getId(),
+                    livro.getTitulo(),
+                    livro.getAutor(),
+                    livro.getAnoPublicacao()
+            });
+            aux = aux.getProximo();
+        }
     }
-}
+
     public void selecionarLinhaTabela(int indice) {
-    if (indice >= 0 && tabelaLivros.getRowCount() > indice) {
-        tabelaLivros.setRowSelectionInterval(indice, indice);
-        tabelaLivros.scrollRectToVisible(tabelaLivros.getCellRect(indice, 0, true));
+        if (indice >= 0 && tabelaLivros.getRowCount() > indice) {
+            tabelaLivros.setRowSelectionInterval(indice, indice);
+            tabelaLivros.scrollRectToVisible(tabelaLivros.getCellRect(indice, 0, true));
+        }
     }
+
+    // Lista filtrada
+    private ListaLivrosDuplamenteEncadeada criarListaFiltrada() {
+    ListaLivrosDuplamenteEncadeada listaFiltrada = new ListaLivrosDuplamenteEncadeada();
+
+    for (int i = 0; i < tabelaLivros.getRowCount(); i++) {
+
+        String titulo = (String) modeloTabela.getValueAt(i, 1);
+
+        Livro livro = lista.buscarPorTitulo(titulo);
+
+        if (livro != null) {
+            listaFiltrada.adicionarNoFim(livro);
+        }
+    }
+
+    return listaFiltrada;
 }
+
+    public DefaultTableModel getModeloTabela() {
+        return modeloTabela;
+    }
 }

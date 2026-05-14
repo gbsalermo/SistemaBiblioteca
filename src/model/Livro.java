@@ -1,5 +1,8 @@
 package model;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Classe Model que representa a entidade Livro.
  * Responsável por armazenar os atributos e os dados associados ao objeto livro.
@@ -21,6 +24,8 @@ public class Livro {
     private String editora;
     // Indica se o livro está emprestado (true) ou disponível (false).
     private boolean emprestado;
+    private LocalDate dataEmprestimo;
+
 
     /**
     * Construtor da classe Livro.
@@ -36,6 +41,7 @@ public class Livro {
         this.genero = genero;
         this.editora = editora;
         this.emprestado = false;
+        this.dataEmprestimo = null;
     }
 
     // Métodos getters e setters para acesso e modificação dos atributos do objeto Livro:
@@ -91,7 +97,14 @@ public class Livro {
     public void setEmprestado(boolean emprestado) {
         this.emprestado = emprestado;
     }
+    public LocalDate getDataEmprestimo() {
+        return dataEmprestimo;
+    }
 
+    public void setDataEmprestimo(LocalDate dataEmprestimo) {
+        this.dataEmprestimo = dataEmprestimo;
+    }
+    
     // Método equals sobrescrito para comparar objetos Livro com base no identificador único (id):
 
     @Override
@@ -132,7 +145,8 @@ public class Livro {
     public String toString() {
         String status;
         if (emprestado) {
-            status = "Emprestado";
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            status = "Emprestado desde " + dataEmprestimo.format(formato);
         }
         else {
             status = "Disponível";

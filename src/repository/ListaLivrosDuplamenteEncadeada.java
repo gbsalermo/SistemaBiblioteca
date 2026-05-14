@@ -562,4 +562,15 @@ public class ListaLivrosDuplamenteEncadeada {
         
         return resultados; // Retorna a lista própria com os livros filtrados
     }
+
+    public void irParaIndice(int indice) {
+
+    atual = primeiro;
+    int contador = 0;
+
+    while (atual != null && contador < indice) {
+        atual = atual.getProximo();
+        contador++;
+    }
+}
 }

@@ -6,9 +6,11 @@ import java.util.List;
 import javax.swing.*;
 
 import model.Livro;
+import model.No;
 import repository.ListaLivrosDuplamenteEncadeada;
 import model.Livro;
 import services.Remover;
+import util.DataLivro;
 
 /**
  * Classe responsavel pelo painel dos botoes e controles da parte superior.
@@ -308,6 +310,40 @@ public class PainelSuperior extends JPanel {
             }
         }
     }
+
+    private void mostrarLivrosEmprestados() {
+    painelEsquerdo.getModeloTabela().setRowCount(0);
+    
+    No aux = lista.getPrimeiro();
+    while (aux != null) {
+        Livro livro = aux.getLivro();
+        
+        if (livro.isEmprestado()) {
+            //Formata a data antes de adicionar na tabela
+            String dataFormatada = util.DataLivro.formatarData(livro.getDataEmprestimo());
+            
+            painelEsquerdo.getModeloTabela().addRow(new Object[]{
+                livro.getId(),
+                livro.getTitulo(),
+                livro.getAutor(),
+                livro.getAnoPublicacao(),
+                dataFormatada  // ✅ Exibe como String formatada
+            });
+        }
+        
+        aux = aux.getProximo();
+    }
+    
+    int quantidadeEmprestados = painelEsquerdo.getModeloTabela().getRowCount();
+    if (quantidadeEmprestados == 0) {
+        JOptionPane.showMessageDialog(
+            this,
+            "Nenhum livro emprestado!",
+            "Emprestados",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+}
 
     private void abrirDialogAdicionar() {
         // Pega a janela pai
