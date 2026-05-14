@@ -3,6 +3,7 @@ package services;
 import repository.ListaLivrosDuplamenteEncadeada;
 import model.No;
 import view.TelaPrincipal;
+import util.CsvExporter;
 
 public class Remover {
     
@@ -48,6 +49,7 @@ public class Remover {
         
         //Reduzindo totalLivros da lista
         lista.setTotalLivros(lista.getTotalLivros() - 1);
+        CsvExporter.exportar(lista);
         return msg;
     }
 
